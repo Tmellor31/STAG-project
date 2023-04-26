@@ -9,10 +9,13 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+
+
 
 /** This class implements the STAG server. */
 public final class GameServer {
-
+    ServerState serverState = new ServerState();
     public enum CommandType {
         notBASIC,
         INVENTORY,
@@ -21,6 +24,7 @@ public final class GameServer {
         LOOK,
         GOTO;
     }
+
     private static final char END_OF_TRANSMISSION = 4;
 
     public static void main(String[] args) throws IOException {
@@ -52,11 +56,14 @@ public final class GameServer {
     */
     public String handleCommand(String command) {
         CommandType action = isBasicCommand(command);
-        if (action != CommandType.notBASIC) {
-            BasicCommands basicCommands = new BasicCommands(); // Create an instance of BasicCommands
-            basicCommands.performBasicCommand(action); // Call the performBasicCommand method on the instance
-        }
-        return "fred";
+        String output = "default";
+        if (action != CommandType.notBASIC)
+            //if action is basic
+            {
+                BasicCommands basicCommands = new BasicCommands(this.serverState);// Pass the GameServer instance to BasicCommands constructor
+                output = basicCommands.performBasicCommand(action); // Call the performBasicCommand method on the instance
+            }
+        return output;
     }
 
 
@@ -80,7 +87,6 @@ public final class GameServer {
         else{
             return CommandType.notBASIC;
         }
-
 }
 
     //  === Methods below are there to facilitate server related operations. ===

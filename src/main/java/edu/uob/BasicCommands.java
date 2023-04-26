@@ -1,17 +1,22 @@
 package edu.uob;
 
+import java.util.ArrayList;
+
 public class BasicCommands {
+    private ServerState serverState;
 
     // Constructor
-    public BasicCommands() {
+    public BasicCommands(ServerState serverState) {
+        this.serverState = serverState;
     }
 
 
-    public void performBasicCommand(GameServer.CommandType command) {
+    public String performBasicCommand(GameServer.CommandType command) {
         switch (command) {
             case INVENTORY:
-                checkInventory();
-                break;
+                ArrayList <String> result = checkInventory();
+                String output = String.join(", ", result) + "\n";
+                return output;
             case GET:
                 performGetAction();
                 break;
@@ -29,10 +34,20 @@ public class BasicCommands {
                 System.out.println("Provided action (" + command + ") did not match command types");
                 break;
         }
+        return "";
     }
 
-    private void checkInventory() {
+    private ArrayList<String> checkInventory() {
         System.out.println("checkInventory() called");
+        return inventoryList();
+    }
+
+    private ArrayList <String> inventoryList () {
+        ArrayList<String> itemNames = new ArrayList<String>();
+       for (GameEntity item: serverState.inventory){
+           itemNames.add(item.getName());
+       }
+       return itemNames;
     }
 
     private void performGetAction() {
