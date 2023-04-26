@@ -13,6 +13,14 @@ import java.nio.file.Paths;
 /** This class implements the STAG server. */
 public final class GameServer {
 
+    public enum CommandType {
+        notBASIC,
+        INVENTORY,
+        GET,
+        DROP,
+        LOOK,
+        GOTO;
+    }
     private static final char END_OF_TRANSMISSION = 4;
 
     public static void main(String[] args) throws IOException {
@@ -43,9 +51,37 @@ public final class GameServer {
     * <p>This method handles all incoming game commands and carries out the corresponding actions.
     */
     public String handleCommand(String command) {
-        // TODO implement your server logic here
+        CommandType action = isBasicCommand(command);
+        if (action != CommandType.notBASIC) {
+            BasicCommands basicCommands = new BasicCommands(); // Create an instance of BasicCommands
+            basicCommands.performBasicCommand(action); // Call the performBasicCommand method on the instance
+        }
         return "fred";
     }
+
+
+    CommandType isBasicCommand(String command) {
+        String lowercaseCommand = command.toLowerCase(); //Ensures case insensitivity
+        if (lowercaseCommand.contains("inventory") || command.contains("inv")) {
+            return CommandType.INVENTORY;
+        }
+        if (lowercaseCommand.contains("get")) {
+            return CommandType.GET;
+        }
+        if (lowercaseCommand.contains("drop")) {
+            return CommandType.DROP;
+        }
+        if (lowercaseCommand.contains("goto")){
+            return CommandType.GOTO;
+        }
+        if (lowercaseCommand.contains("look")){
+            return CommandType.LOOK;
+        }
+        else{
+            return CommandType.notBASIC;
+        }
+
+}
 
     //  === Methods below are there to facilitate server related operations. ===
 
