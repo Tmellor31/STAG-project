@@ -14,10 +14,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DotFileLoader {
+    private ServerState serverState;
+
     private HashMap<String, GameEntity> gameEntities;
 
     public void DotFileLoader() {
         gameEntities = new HashMap<>();
+        this.serverState = serverState;
     }
 
     public void loadDotFile(String filePath) {
@@ -44,7 +47,43 @@ public class DotFileLoader {
     }
 
     public void locationsAdder (ArrayList<Graph> locationsToAdd){
+     for (int i = 0; i < (locationsToAdd.size()); i++){
+          Graph location = locationsToAdd.get(i);
+          Node locationDetails = location.getNodes(false).get(0);
+          String locationName = locationDetails.getId().getId();
+          String locationDescription = locationDetails.getAttribute("description");
+          Location newLocation = new Location(locationName, locationDescription);
 
+          //Adding artifacts/furniture
+         ArrayList<Graph> containedEntities = location.getSubgraphs();
+          for (int y = 0; y < (containedEntities.size()); y++){
+              Graph entity = containedEntities.get(y);
+              String entityType = entity.getId().getId();
+
+              for (int x = 0; x < entity.getNodes(false).size(); x++){
+                  Node entityDetails = entity.getNodes(false).get(x);
+                  String entityName = entityDetails.getId().getId();
+                  String entityDescription = entityDetails.getAttribute("description");
+
+                  if(entityType.equalsIgnoreCase("furniture")){
+                      Furniture newFurniture = new Furniture(entityName,entityDescription);
+                      newLocation.addFurniture(newFurniture);
+                  }
+                  if(entityType.equalsIgnoreCase("artefact")){
+                      Artefact newArtefact = new Artefact(entityName,entityDescription);
+                      newLocation.addArtefact(newArtefact);
+                  }
+                  if(entityType.equalsIgnoreCase("character")){
+                      Character newCharacter = new Character(entityName,entityDescription);
+                      newLocation.addCharacter(newCharacter);
+                  }
+                  else {
+                      System.out.println("Entity type unrecognised when trying to add");
+                  }
+                  //Don't think is needed anymore newLocation.addEntity(entityType, entityName, entityDescription);
+              }
+          }
+        }
     }
 }
 
