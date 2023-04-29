@@ -39,15 +39,7 @@ public class BasicCommands {
 
     private ArrayList<String> checkInventory() {
         System.out.println("checkInventory() called");
-        return inventoryList();
-    }
-
-    private ArrayList <String> inventoryList () {
-        ArrayList<String> itemNames = new ArrayList<String>();
-       for (GameEntity item: serverState.inventory){
-           itemNames.add(item.getName());
-       }
-       return itemNames;
+        return serverState.getInventoryList();
     }
 
     private void performGetAction() {

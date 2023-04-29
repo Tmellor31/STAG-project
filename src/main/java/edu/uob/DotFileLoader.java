@@ -18,7 +18,7 @@ public class DotFileLoader {
 
     private HashMap<String, GameEntity> gameEntities;
 
-    public void DotFileLoader() {
+    public DotFileLoader(ServerState serverState) {
         gameEntities = new HashMap<>();
         this.serverState = serverState;
     }
@@ -37,7 +37,8 @@ public class DotFileLoader {
             Node locationDetails = startLocation.getNodes(false).get(0); //Gets the nodes of the first location in this case cabin
             // Yes, you do need to get the ID twice !
             String locationName = locationDetails.getId().getId(); //Name of first location '
-            System.out.println(locationName);
+            //System.out.println(locationName);
+            populateLocationMap(locations); //Loads locations into the serverstate
         } catch (FileNotFoundException fnfe) {
             System.out.println("Couldn't find file");
         } catch (ParseException e) {
@@ -46,18 +47,17 @@ public class DotFileLoader {
 
     }
 
-    public void locationsAdder (ArrayList<Graph> locationsToAdd){
+    public void populateLocationMap (ArrayList<Graph> locationsToAdd){
      for (int i = 0; i < (locationsToAdd.size()); i++){
           Graph location = locationsToAdd.get(i);
           Node locationDetails = location.getNodes(false).get(0);
           String locationName = locationDetails.getId().getId();
           String locationDescription = locationDetails.getAttribute("description");
-          Location newLocation = new Location(locationName, locationDescription);
+          Location newLocation = new Location(locationName, locationDescription, i == 0);
 
           //Adding artifacts/furniture
          ArrayList<Graph> containedEntities = location.getSubgraphs();
-          for (int y = 0; y < (containedEntities.size()); y++){
-              Graph entity = containedEntities.get(y);
+          for (Graph entity : containedEntities){
               String entityType = entity.getId().getId();
 
               for (int x = 0; x < entity.getNodes(false).size(); x++){
@@ -68,14 +68,17 @@ public class DotFileLoader {
                   if(entityType.equalsIgnoreCase("furniture")){
                       Furniture newFurniture = new Furniture(entityName,entityDescription);
                       newLocation.addFurniture(newFurniture);
+                      continue;
                   }
-                  if(entityType.equalsIgnoreCase("artefact")){
+                  if(entityType.equalsIgnoreCase("artefacts")){
                       Artefact newArtefact = new Artefact(entityName,entityDescription);
                       newLocation.addArtefact(newArtefact);
+                      continue;
                   }
-                  if(entityType.equalsIgnoreCase("character")){
+                  if(entityType.equalsIgnoreCase("characters")){
                       Character newCharacter = new Character(entityName,entityDescription);
                       newLocation.addCharacter(newCharacter);
+                      continue;
                   }
                   else {
                       System.out.println("Entity type unrecognised when trying to add");
@@ -83,6 +86,7 @@ public class DotFileLoader {
                   //Don't think is needed anymore newLocation.addEntity(entityType, entityName, entityDescription);
               }
           }
+          serverState.addLocation(newLocation);
         }
     }
 }

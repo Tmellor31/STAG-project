@@ -45,7 +45,7 @@ public final class GameServer {
     *
     */
     public GameServer(File entitiesFile, File actionsFile) {
-        DotFileLoader dotFileLoader = new DotFileLoader();
+        DotFileLoader dotFileLoader = new DotFileLoader(this.serverState);
         dotFileLoader.loadDotFile(entitiesFile.getAbsolutePath());
     }
 

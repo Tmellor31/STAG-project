@@ -5,18 +5,21 @@ import java.util.ArrayList;
 public class Location {
     private String name;
     private String description;
+
+    private boolean isStart;
     private ArrayList<Location> paths;
     private ArrayList<Character> characters;
     private ArrayList<Artefact> artefacts;
     private ArrayList<Furniture> furniture;
 
-    public Location(String name, String description) {
+    public Location(String name, String description, boolean isStart) {
         this.name = name;
         this.description = description;
         this.paths = new ArrayList<Location>();
         this.characters = new ArrayList<Character>();
         this.artefacts = new ArrayList<Artefact>();
         this.furniture = new ArrayList<Furniture>();
+        this.isStart = isStart;
     }
 
     public String getName() {
@@ -25,6 +28,10 @@ public class Location {
 
     public String getDescription() {
         return this.description;
+    }
+
+    public boolean getIsStart() {
+        return this.isStart;
     }
 
     public void addPath(Location destination) {
