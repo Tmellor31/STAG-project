@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
+import com.alexmerz.graphviz.objects.Edge;
 import com.alexmerz.graphviz.objects.Graph;
 import com.alexmerz.graphviz.objects.Node;
 
@@ -39,6 +40,16 @@ public class DotFileLoader {
             String locationName = locationDetails.getId().getId(); //Name of first location '
             //System.out.println(locationName);
             populateLocationMap(locations); //Loads locations into the serverstate
+
+            // The paths will always be in the second subgraph
+            ArrayList<Edge> paths = sections.get(1).getEdges();
+            Edge firstPath = paths.get(0); //This path is from cabin
+            Node fromLocation = firstPath.getSource().getNode();
+            String fromName = fromLocation.getId().getId();//cabin
+            Node toLocation = firstPath.getTarget().getNode();//to forest
+            String toName = toLocation.getId().getId();//forest
+            addPaths(paths);
+
         } catch (FileNotFoundException fnfe) {
             System.out.println("Couldn't find file");
         } catch (ParseException e) {
@@ -47,48 +58,64 @@ public class DotFileLoader {
 
     }
 
-    public void populateLocationMap (ArrayList<Graph> locationsToAdd){
-     for (int i = 0; i < (locationsToAdd.size()); i++){
-          Graph location = locationsToAdd.get(i);
-          Node locationDetails = location.getNodes(false).get(0);
-          String locationName = locationDetails.getId().getId();
-          String locationDescription = locationDetails.getAttribute("description");
-          Location newLocation = new Location(locationName, locationDescription, i == 0);
+    public void populateLocationMap(ArrayList<Graph> locationsToAdd) {
+        for (int i = 0; i < (locationsToAdd.size()); i++) {
+            Graph location = locationsToAdd.get(i);
+            Node locationDetails = location.getNodes(false).get(0);
+            String locationName = locationDetails.getId().getId();
+            String locationDescription = locationDetails.getAttribute("description");
+            Location newLocation = new Location(locationName, locationDescription, i == 0);
 
-          //Adding artifacts/furniture
-         ArrayList<Graph> containedEntities = location.getSubgraphs();
-          for (Graph entity : containedEntities){
-              String entityType = entity.getId().getId();
+            //Adding artifacts/furniture
+            ArrayList<Graph> containedEntities = location.getSubgraphs();
+            for (Graph entity : containedEntities) {
+                String entityType = entity.getId().getId();
 
-              for (int x = 0; x < entity.getNodes(false).size(); x++){
-                  Node entityDetails = entity.getNodes(false).get(x);
-                  String entityName = entityDetails.getId().getId();
-                  String entityDescription = entityDetails.getAttribute("description");
+                for (int x = 0; x < entity.getNodes(false).size(); x++) {
+                    Node entityDetails = entity.getNodes(false).get(x);
+                    String entityName = entityDetails.getId().getId();
+                    String entityDescription = entityDetails.getAttribute("description");
 
-                  if(entityType.equalsIgnoreCase("furniture")){
-                      Furniture newFurniture = new Furniture(entityName,entityDescription);
-                      newLocation.addFurniture(newFurniture);
-                      continue;
-                  }
-                  if(entityType.equalsIgnoreCase("artefacts")){
-                      Artefact newArtefact = new Artefact(entityName,entityDescription);
-                      newLocation.addArtefact(newArtefact);
-                      continue;
-                  }
-                  if(entityType.equalsIgnoreCase("characters")){
-                      Character newCharacter = new Character(entityName,entityDescription);
-                      newLocation.addCharacter(newCharacter);
-                      continue;
-                  }
-                  else {
-                      System.out.println("Entity type unrecognised when trying to add");
-                  }
-                  //Don't think is needed anymore newLocation.addEntity(entityType, entityName, entityDescription);
-              }
-          }
-          serverState.addLocation(newLocation);
+                    if (entityType.equalsIgnoreCase("furniture")) {
+                        Furniture newFurniture = new Furniture(entityName, entityDescription);
+                        newLocation.addFurniture(newFurniture);
+                        continue;
+                    }
+                    if (entityType.equalsIgnoreCase("artefacts")) {
+                        Artefact newArtefact = new Artefact(entityName, entityDescription);
+                        newLocation.addArtefact(newArtefact);
+                        continue;
+                    }
+                    if (entityType.equalsIgnoreCase("characters")) {
+                        Character newCharacter = new Character(entityName, entityDescription);
+                        newLocation.addCharacter(newCharacter);
+                        continue;
+                    } else {
+                        System.out.println("Entity type unrecognised when trying to add");
+                    }
+                }
+            }
+            serverState.addLocation(newLocation);
+        }
+    }
+
+    public void addPaths(ArrayList<Edge> pathsToAdd) {
+        for (Edge path : pathsToAdd) {
+            Node fromLocation = path.getSource().getNode();
+            String fromName = fromLocation.getId().getId();
+            Node toLocation = path.getTarget().getNode();
+            String toName = toLocation.getId().getId();
+
+            // Find the locations in the server state
+            Location from = serverState.getLocation(fromName);
+            Location to = serverState.getLocation(toName);
+
+            from.addPath(from, to);
         }
     }
 }
+
+
+
 
 

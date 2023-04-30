@@ -30,5 +30,8 @@ public class ServerState {
         throw new Exception("No start location found");
     }
 
+    public Location getLocation(String locationName) {
+        return locationMap.get(locationName);
+    }
 }
 

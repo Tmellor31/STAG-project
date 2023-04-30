@@ -1,5 +1,6 @@
 package edu.uob;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Location {
@@ -7,7 +8,7 @@ public class Location {
     private String description;
 
     private boolean isStart;
-    private ArrayList<Location> paths;
+    private ArrayList<Path> paths;
     private ArrayList<Character> characters;
     private ArrayList<Artefact> artefacts;
     private ArrayList<Furniture> furniture;
@@ -15,7 +16,7 @@ public class Location {
     public Location(String name, String description, boolean isStart) {
         this.name = name;
         this.description = description;
-        this.paths = new ArrayList<Location>();
+        this.paths = new ArrayList<Path>();
         this.characters = new ArrayList<Character>();
         this.artefacts = new ArrayList<Artefact>();
         this.furniture = new ArrayList<Furniture>();
@@ -34,13 +35,15 @@ public class Location {
         return this.isStart;
     }
 
-    public void addPath(Location destination) {
-        this.paths.add(destination);
+    public void addPath(Location from, Location to) {
+        Path path = new Path(from, to);
+        this.paths.add(path);
     }
 
-    public ArrayList<Location> getPaths() {
+    public ArrayList<Path> getPaths() {
         return this.paths;
     }
+
 
     public void addCharacter(Character character) {
         this.characters.add(character);

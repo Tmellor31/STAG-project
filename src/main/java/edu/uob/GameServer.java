@@ -10,12 +10,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Map;
 
 
-
-/** This class implements the STAG server. */
+/**
+ * This class implements the STAG server.
+ */
 public final class GameServer {
     ServerState serverState = new ServerState();
+
     public enum CommandType {
         notBASIC,
         INVENTORY,
@@ -35,35 +38,41 @@ public final class GameServer {
     }
 
     /**
-    * KEEP this signature (i.e. {@code edu.uob.GameServer(File, File)}) otherwise we won't be able to mark
-    * your submission correctly.
-    *
-    * <p>You MUST use the supplied {@code entitiesFile} and {@code actionsFile}
-    *
-    * @param entitiesFile The game configuration file containing all game entities to use in your game
-    * @param actionsFile The game configuration file containing all game actions to use in your game
-    *
-    */
+     * KEEP this signature (i.e. {@code edu.uob.GameServer(File, File)}) otherwise we won't be able to mark
+     * your submission correctly.
+     *
+     * <p>You MUST use the supplied {@code entitiesFile} and {@code actionsFile}
+     *
+     * @param entitiesFile The game configuration file containing all game entities to use in your game
+     * @param actionsFile  The game configuration file containing all game actions to use in your game
+     */
     public GameServer(File entitiesFile, File actionsFile) {
         DotFileLoader dotFileLoader = new DotFileLoader(this.serverState);
         dotFileLoader.loadDotFile(entitiesFile.getAbsolutePath());
     }
 
     /**
-    * KEEP this signature (i.e. {@code edu.uob.GameServer.handleCommand(String)}) otherwise we won't be
-    * able to mark your submission correctly.
-    *
-    * <p>This method handles all incoming game commands and carries out the corresponding actions.
-    */
+     * KEEP this signature (i.e. {@code edu.uob.GameServer.handleCommand(String)}) otherwise we won't be
+     * able to mark your submission correctly.
+     *
+     * <p>This method handles all incoming game commands and carries out the corresponding actions.
+     */
     public String handleCommand(String command) {
         CommandType action = isBasicCommand(command);
         String output = "default";
         if (action != CommandType.notBASIC)
-            //if action is basic
-            {
-                BasicCommands basicCommands = new BasicCommands(this.serverState);// Pass the GameServer instance to BasicCommands constructor
-                output = basicCommands.performBasicCommand(action); // Call the performBasicCommand method on the instance
+        //if action is basic
+        {
+            BasicCommands basicCommands = new BasicCommands(this.serverState);// Pass the GameServer instance to BasicCommands constructor
+            output = basicCommands.performBasicCommand(action); // Call the performBasicCommand method on the instance
+        }
+        /*for (Map.Entry<String, Location> entry : serverState.locationMap.entrySet()) {
+            Location location = entry.getValue();
+            System.out.println(location.getName() + " : " + location.getDescription());
+            for (Path path : location.getPaths()) {
+                System.out.println("- " + path.getFrom().getName() + " to " + path.getTo().getName());
             }
+        }Can be used to print out all locations and paths if the location hashmap is public*/
         return output;
     }
 
@@ -79,29 +88,28 @@ public final class GameServer {
         if (lowercaseCommand.contains("drop")) {
             return CommandType.DROP;
         }
-        if (lowercaseCommand.contains("goto")){
+        if (lowercaseCommand.contains("goto")) {
             return CommandType.GOTO;
         }
-        if (lowercaseCommand.contains("look")){
+        if (lowercaseCommand.contains("look")) {
             return CommandType.LOOK;
-        }
-        else{
+        } else {
             return CommandType.notBASIC;
         }
-}
+    }
 
     //  === Methods below are there to facilitate server related operations. ===
 
     /**
-    * Starts a *blocking* socket server listening for new connections. This method blocks until the
-    * current thread is interrupted.
-    *
-    * <p>This method isn't used for marking. You shouldn't have to modify this method, but you can if
-    * you want to.
-    *
-    * @param portNumber The port to listen on.
-    * @throws IOException If any IO related operation fails.
-    */
+     * Starts a *blocking* socket server listening for new connections. This method blocks until the
+     * current thread is interrupted.
+     *
+     * <p>This method isn't used for marking. You shouldn't have to modify this method, but you can if
+     * you want to.
+     *
+     * @param portNumber The port to listen on.
+     * @throws IOException If any IO related operation fails.
+     */
     public void blockingListenOn(int portNumber) throws IOException {
         try (ServerSocket s = new ServerSocket(portNumber)) {
             System.out.println("Server listening on port " + portNumber);
@@ -116,21 +124,21 @@ public final class GameServer {
     }
 
     /**
-    * Handles an incoming connection from the socket server.
-    *
-    * <p>This method isn't used for marking. You shouldn't have to modify this method, but you can if
-    * * you want to.
-    *
-    * @param serverSocket The client socket to read/write from.
-    * @throws IOException If any IO related operation fails.
-    */
+     * Handles an incoming connection from the socket server.
+     *
+     * <p>This method isn't used for marking. You shouldn't have to modify this method, but you can if
+     * * you want to.
+     *
+     * @param serverSocket The client socket to read/write from.
+     * @throws IOException If any IO related operation fails.
+     */
     private void blockingHandleConnection(ServerSocket serverSocket) throws IOException {
         try (Socket s = serverSocket.accept();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()))) {
+             BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()))) {
             System.out.println("Connection established");
             String incomingCommand = reader.readLine();
-            if(incomingCommand != null) {
+            if (incomingCommand != null) {
                 System.out.println("Received message from " + incomingCommand);
                 String result = handleCommand(incomingCommand);
                 writer.write(result);
