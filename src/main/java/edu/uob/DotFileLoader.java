@@ -16,11 +16,7 @@ import java.util.HashMap;
 
 public class DotFileLoader {
     private ServerState serverState;
-
-    private HashMap<String, GameEntity> gameEntities;
-
     public DotFileLoader(ServerState serverState) {
-        gameEntities = new HashMap<>();
         this.serverState = serverState;
     }
 

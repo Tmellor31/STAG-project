@@ -2,12 +2,16 @@ package edu.uob;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 public class ServerState {
     private ArrayList<GameEntity> inventory = new ArrayList<>();
 
     private LinkedHashMap<String, Location> locationMap = new LinkedHashMap<>();
+
+    private HashMap<String, HashSet<GameAction>> actions = new HashMap<String, HashSet<GameAction>>();
 
 
     public ArrayList <String> getInventoryList () {
@@ -33,5 +37,18 @@ public class ServerState {
     public Location getLocation(String locationName) {
         return locationMap.get(locationName);
     }
+
+    public HashMap<String, HashSet<GameAction>> getActions() {
+        return actions;
+    }
+
+    public ArrayList<GameAction> getAllGameActions() {//Useful for printing all actions for testing
+        ArrayList<GameAction> allGameActions = new ArrayList<>();
+        for (HashSet<GameAction> gameActions : actions.values()) {
+            allGameActions.addAll(gameActions);
+        }
+        return allGameActions;
+    }
+
 }
 

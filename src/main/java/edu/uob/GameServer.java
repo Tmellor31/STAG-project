@@ -49,6 +49,8 @@ public final class GameServer {
     public GameServer(File entitiesFile, File actionsFile) {
         DotFileLoader dotFileLoader = new DotFileLoader(this.serverState);
         dotFileLoader.loadDotFile(entitiesFile.getAbsolutePath());
+        XMLFileLoader xmlFileLoader = new XMLFileLoader(this.serverState);
+        xmlFileLoader.loadXMLFile(actionsFile.getAbsolutePath());
     }
 
     /**
@@ -73,6 +75,10 @@ public final class GameServer {
                 System.out.println("- " + path.getFrom().getName() + " to " + path.getTo().getName());
             }
         }Can be used to print out all locations and paths if the location hashmap is public*/
+        ArrayList<GameAction> allGameActions = this.serverState.getAllGameActions();
+        for (GameAction gameAction : allGameActions) {
+            System.out.println(gameAction.getNarration());
+        }
         return output;
     }
 
