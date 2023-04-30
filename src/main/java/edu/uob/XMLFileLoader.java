@@ -39,7 +39,7 @@ public class XMLFileLoader {
                     triggers.add(triggerNodes.item(j).getTextContent());
                 }
 
-                // Create the GameAction object and add it to the HashSet for each trigger phrase
+                // Create the GameAction object for this action
                 NodeList subjectNodes = actionElement.getElementsByTagName("entity");
                 HashSet<String> subjects = new HashSet<>();
                 for (int j = 0; j < subjectNodes.getLength(); j++) {
@@ -57,8 +57,9 @@ public class XMLFileLoader {
                 }
                 String narration = actionElement.getElementsByTagName("narration").item(0).getTextContent();
 
-                GameAction gameAction = new GameAction(subjects, consumed, produced, narration);
+                GameAction gameAction = new GameAction(triggers, subjects, consumed, produced, narration);
 
+                // Add the GameAction object to the HashSet for each trigger phrase
                 for (String trigger : triggers) {
                     if (actions.containsKey(trigger)) {
                         actions.get(trigger).add(gameAction);
@@ -77,5 +78,18 @@ public class XMLFileLoader {
             System.out.println("IOException was thrown when attempting to read basic actions file");
         }
     }
+
+
+    public void printAllKeyphrases() {//Prints out all triggers currently in the game e.g. 'chop' 'cut' etc
+        for (HashSet<GameAction> gameActions : actions.values()) {
+            for (GameAction gameAction : gameActions) {
+                HashSet<String> triggers = gameAction.getTriggers();
+                for (String trigger : triggers) {
+                    System.out.println(trigger);
+                }
+            }
+        }
+    }
+
 
 }

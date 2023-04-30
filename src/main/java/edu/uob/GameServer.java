@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 
 
@@ -77,8 +78,12 @@ public final class GameServer {
         }Can be used to print out all locations and paths if the location hashmap is public*/
         ArrayList<GameAction> allGameActions = this.serverState.getAllGameActions();
         for (GameAction gameAction : allGameActions) {
-            System.out.println(gameAction.getNarration());
+            HashSet<String> triggers = gameAction.getTriggers();
+            for (String trigger : triggers) {
+                System.out.println(trigger);
+            }
         }
+
         return output;
     }
 
