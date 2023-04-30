@@ -76,14 +76,7 @@ public final class GameServer {
                 System.out.println("- " + path.getFrom().getName() + " to " + path.getTo().getName());
             }
         }Can be used to print out all locations and paths if the location hashmap is public*/
-        ArrayList<GameAction> allGameActions = this.serverState.getAllGameActions();
-        for (GameAction gameAction : allGameActions) {
-            HashSet<String> triggers = gameAction.getTriggers();
-            for (String trigger : triggers) {
-                System.out.println(trigger);
-            }
-        }
-
+        System.out.println(serverState.getAllTriggers());
         return output;
     }
 

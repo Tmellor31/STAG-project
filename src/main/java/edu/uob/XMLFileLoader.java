@@ -18,10 +18,11 @@ public class XMLFileLoader {
 
     private HashMap<String, HashSet<GameAction>> actions;
 
-    public XMLFileLoader(ServerState serverState){
+    public XMLFileLoader(ServerState serverState) {
         this.serverState = serverState;
         this.actions = serverState.getActions();
     }
+
     void loadXMLFile(String filePath) {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -33,11 +34,8 @@ public class XMLFileLoader {
                 Element actionElement = (Element) actionNodes.item(i);
 
                 // Get the triggers for this action
-                HashSet<String> triggers = new HashSet<>();
-                NodeList triggerNodes = actionElement.getElementsByTagName("keyphrase");
-                for (int j = 0; j < triggerNodes.getLength(); j++) {
-                    triggers.add(triggerNodes.item(j).getTextContent());
-                }
+                HashSet<String> triggers = loadTriggers(actionElement.getElementsByTagName("keyphrase"));
+
 
                 // Create the GameAction object for this action
                 NodeList subjectNodes = actionElement.getElementsByTagName("entity");
@@ -57,7 +55,7 @@ public class XMLFileLoader {
                 }
                 String narration = actionElement.getElementsByTagName("narration").item(0).getTextContent();
 
-                GameAction gameAction = new GameAction(triggers, subjects, consumed, produced, narration);
+                GameAction gameAction = new GameAction(subjects, consumed, produced, narration);
 
                 // Add the GameAction object to the HashSet for each trigger phrase
                 for (String trigger : triggers) {
@@ -79,16 +77,12 @@ public class XMLFileLoader {
         }
     }
 
-
-    public void printAllKeyphrases() {//Prints out all triggers currently in the game e.g. 'chop' 'cut' etc
-        for (HashSet<GameAction> gameActions : actions.values()) {
-            for (GameAction gameAction : gameActions) {
-                HashSet<String> triggers = gameAction.getTriggers();
-                for (String trigger : triggers) {
-                    System.out.println(trigger);
-                }
-            }
+    private HashSet<String> loadTriggers(NodeList nodeList) {
+        HashSet<String> triggers = new HashSet<>();
+        for (int j = 0; j < nodeList.getLength(); j++) {
+            triggers.add(nodeList.item(j).getTextContent());
         }
+        return triggers;
     }
 
 

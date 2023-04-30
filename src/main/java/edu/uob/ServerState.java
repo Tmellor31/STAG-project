@@ -50,5 +50,13 @@ public class ServerState {
         return allGameActions;
     }
 
+    public ArrayList<String> getAllTriggers() {//Prints out all triggers currently in the game e.g. 'chop' 'cut' etc
+        ArrayList<String> triggers = new ArrayList<>();
+        for (String trigger : actions.keySet()) {
+            triggers.add(trigger);
+        }
+        return triggers;
+    }
+
 }
 

@@ -65,13 +65,13 @@ public class DotFileLoader {
             //Adding artifacts/furniture
             ArrayList<Graph> containedEntities = location.getSubgraphs();
             for (Graph entity : containedEntities) {
-                String entityType = entity.getId().getId();
+                String entityType = entity.getId().getId().toLowerCase();
 
                 for (int x = 0; x < entity.getNodes(false).size(); x++) {
                     Node entityDetails = entity.getNodes(false).get(x);
                     String entityName = entityDetails.getId().getId();
                     String entityDescription = entityDetails.getAttribute("description");
-
+                    //TODO make this a switch statement instead
                     if (entityType.equalsIgnoreCase("furniture")) {
                         Furniture newFurniture = new Furniture(entityName, entityDescription);
                         newLocation.addFurniture(newFurniture);
