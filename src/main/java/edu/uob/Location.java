@@ -44,6 +44,15 @@ public class Location {
         return this.paths;
     }
 
+    public boolean hasPathTo(Location location) {
+        for (Path path : paths) {
+            if (path.getTo() == location) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addCharacter(Character character) {
         this.characters.add(character);
     }

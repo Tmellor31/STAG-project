@@ -12,10 +12,10 @@ public class BasicCommands {
     }
 
 
-    public String performBasicCommand(GameServer.CommandType command, ArrayList <String> tokenizedCommand) {
+    public String performBasicCommand(GameServer.CommandType command, ArrayList<String> tokenizedCommand) {
         switch (command) {
             case INVENTORY:
-                ArrayList <String> result = checkInventory();
+                ArrayList<String> result = checkInventory();
                 String output = String.join(", ", result) + "\n";
                 return output;
             case GET:
@@ -28,8 +28,8 @@ public class BasicCommands {
                 output = performLookAction();
                 return output;
             case GOTO:
-                //performGotoAction();
-                break;
+                output = performGotoAction(tokenizedCommand);
+                return output;
             default:
                 // Error performing action
                 System.out.println("Provided action (" + command + ") did not match command types");
@@ -60,29 +60,27 @@ public class BasicCommands {
         String furnitureDescriptions = serverState.getCurrentLocation().getFurnitureDescriptions();
         String availablePaths = serverState.getCurrentLocation().getAvailablePaths();
         String output = currentRoom + "\n" + roomDescription + "\n" +
-                artefactsDescriptions +  "\n" + furnitureDescriptions + "\n" +  availablePaths;
+                artefactsDescriptions + "\n" + furnitureDescriptions + "\n" + availablePaths;
         return output;
     }
 
-    /*private void performGotoAction(ArrayList<String> tokenizedCommand) {
-        if (tokenizedCommand.size() < 2) {
-            // not enough arguments
-            return;
+    private String performGotoAction(ArrayList<String> tokenizedCommand) {
+        int gotoIndex = tokenizedCommand.indexOf("goto");
+        String output = ("No location found after goto command");
+        if (gotoIndex != -1 && gotoIndex + 1 < tokenizedCommand.size()) {
+            //If statement checks for goto command and a location following it
+            String location = tokenizedCommand.get(gotoIndex + 1);
+            Location newLocation = serverState.getLocation(location);
+            if (!serverState.getCurrentLocation().hasPathTo(newLocation)) {
+                output = ("The location you are in doesn't have a path to the targeted location (" + location + ")");
+                return output;
+            }
+            serverState.setCurrentLocation(newLocation);
+            output = ("You have moved to " + location + ".");
+            return output;
         }
-        String destination = tokenizedCommand.get(1);
-        Location currentLocation = serverState.
-        ArrayList <Path> paths = currentLocation.getPaths();
-        if (paths.containsKey(destination)) {
-            // update current location to the destination
-            serverState.setLocation(paths.get(destination));
-            // perform any actions needed for entering the new location
-            performLookAction();
-        } else {
-            // invalid destination
-            System.out.println("You can't go there.");
-        }
-    }*/
-
-
+        return output;
+    }
 }
+
 
