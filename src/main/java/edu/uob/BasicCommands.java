@@ -54,7 +54,14 @@ public class BasicCommands {
 
     private String performLookAction() {
         System.out.println("performLookAction() called");
-        return serverState.getCurrentLocation().getName();
+        String currentRoom = serverState.getCurrentLocation().getName();
+        String roomDescription = serverState.getCurrentLocation().getDescription();
+        String artefactsDescriptions = serverState.getCurrentLocation().getArtefactDescriptions();
+        String furnitureDescriptions = serverState.getCurrentLocation().getFurnitureDescriptions();
+        String availablePaths = serverState.getCurrentLocation().getAvailablePaths();
+        String output = currentRoom + "\n" + roomDescription + "\n" +
+                artefactsDescriptions +  "\n" + furnitureDescriptions + "\n" +  availablePaths;
+        return output;
     }
 
     /*private void performGotoAction(ArrayList<String> tokenizedCommand) {

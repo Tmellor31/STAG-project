@@ -44,7 +44,6 @@ public class Location {
         return this.paths;
     }
 
-
     public void addCharacter(Character character) {
         this.characters.add(character);
     }
@@ -59,6 +58,35 @@ public class Location {
 
     public ArrayList<Artefact> getArtefacts() {
         return this.artefacts;
+    }
+
+    public String getArtefactDescriptions() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Artefacts:\n");
+        for (Artefact a : artefacts) {
+            sb.append("- ").append(a.getName()).append(": ").append(a.getDescription()).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public String getFurnitureDescriptions() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Furniture:\n");
+        for (Furniture f : furniture) {
+            sb.append("- ").append(f.getName()).append(": ").append(f.getDescription()).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public String getAvailablePaths() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Available paths:\n");
+        for (Path path : paths) {
+            if (path.getFrom() == this) {
+                sb.append("- ").append(path.getFrom().getName()).append(" -> ").append(path.getTo().getName()).append("\n");
+            }
+        }
+        return sb.toString();
     }
 
     public void addFurniture(Furniture furniture) {
