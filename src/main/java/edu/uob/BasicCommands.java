@@ -64,7 +64,7 @@ public class BasicCommands {
         return output;
     }
 
-    private String performGotoAction(ArrayList<String> tokenizedCommand) {
+    private String performGotoAction(ArrayList<String> tokenizedCommand) { //Remember forest goto is invalid (built-in), has to be command first then subject entity
         int gotoIndex = tokenizedCommand.indexOf("goto");
         String output = ("No location found after goto command");
         if (gotoIndex != -1 && gotoIndex + 1 < tokenizedCommand.size()) {

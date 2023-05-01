@@ -63,7 +63,7 @@ public final class GameServer {
     public String handleCommand(String command) {
         ArrayList<String> tokenizedCommand = tokenizeInputString(command);
         CommandType action = isBasicCommand(tokenizedCommand);
-        String output = "default";
+        String output = "Not a valid command, may have entered too many built-in commands or not specified subjects for basic ones";
         if (action != CommandType.notBASIC)
         //if action is basic
         {
