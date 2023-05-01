@@ -16,6 +16,7 @@ import java.util.HashMap;
 
 public class DotFileLoader {
     private ServerState serverState;
+
     public DotFileLoader(ServerState serverState) {
         this.serverState = serverState;
     }
@@ -62,7 +63,7 @@ public class DotFileLoader {
             String locationDescription = locationDetails.getAttribute("description");
             Location newLocation = new Location(locationName, locationDescription, i == 0);
 
-            //Adding artifacts/furniture
+            //Adding artefacts/furniture/characters
             ArrayList<Graph> containedEntities = location.getSubgraphs();
             for (Graph entity : containedEntities) {
                 String entityType = entity.getId().getId().toLowerCase();
@@ -71,45 +72,45 @@ public class DotFileLoader {
                     Node entityDetails = entity.getNodes(false).get(x);
                     String entityName = entityDetails.getId().getId();
                     String entityDescription = entityDetails.getAttribute("description");
-                    //TODO make this a switch statement instead
-                    if (entityType.equalsIgnoreCase("furniture")) {
-                        Furniture newFurniture = new Furniture(entityName, entityDescription);
-                        newLocation.addFurniture(newFurniture);
-                        continue;
-                    }
-                    if (entityType.equalsIgnoreCase("artefacts")) {
-                        Artefact newArtefact = new Artefact(entityName, entityDescription);
-                        newLocation.addArtefact(newArtefact);
-                        continue;
-                    }
-                    if (entityType.equalsIgnoreCase("characters")) {
-                        Character newCharacter = new Character(entityName, entityDescription);
-                        newLocation.addCharacter(newCharacter);
-                        continue;
-                    } else {
-                        System.out.println("Entity type unrecognised when trying to add");
+                    switch (entityType) {
+                        case "furniture":
+                            Furniture newFurniture = new Furniture(entityName, entityDescription);
+                            newLocation.addFurniture(newFurniture);
+                            break;
+                        case "artefacts":
+                            Artefact newArtefact = new Artefact(entityName, entityDescription);
+                            newLocation.addArtefact(newArtefact);
+                            break;
+                        case "characters":
+                            Character newCharacter = new Character(entityName, entityDescription);
+                            newLocation.addCharacter(newCharacter);
+                            break;
+                        default:
+                            System.out.println("Entity type unrecognised when trying to add");
+                            break;
                     }
                 }
+                serverState.addLocation(newLocation);
             }
-            serverState.addLocation(newLocation);
         }
     }
 
-    public void addPaths(ArrayList<Edge> pathsToAdd) {
-        for (Edge path : pathsToAdd) {
-            Node fromLocation = path.getSource().getNode();
-            String fromName = fromLocation.getId().getId();
-            Node toLocation = path.getTarget().getNode();
-            String toName = toLocation.getId().getId();
 
-            // Find the locations in the server state
-            Location from = serverState.getLocation(fromName);
-            Location to = serverState.getLocation(toName);
+        public void addPaths (ArrayList < Edge > pathsToAdd) {
+            for (Edge path : pathsToAdd) {
+                Node fromLocation = path.getSource().getNode();
+                String fromName = fromLocation.getId().getId();
+                Node toLocation = path.getTarget().getNode();
+                String toName = toLocation.getId().getId();
 
-            from.addPath(from, to);
+                // Find the locations in the server state
+                Location from = serverState.getLocation(fromName);
+                Location to = serverState.getLocation(toName);
+
+                from.addPath(from, to);
+            }
         }
     }
-}
 
 
 
