@@ -47,6 +47,8 @@ public class DotFileLoader {
             String toName = toLocation.getId().getId();//forest
             addPaths(paths);
 
+            serverState.setCurrentLocation(serverState.getFirstLocation());
+
         } catch (FileNotFoundException fnfe) {
             System.out.println("Couldn't find file");
         } catch (ParseException e) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class BasicCommands {
     private ServerState serverState;
+    private ArrayList<String> tokenizedCommand;
 
     // Constructor
     public BasicCommands(ServerState serverState) {
@@ -11,23 +12,23 @@ public class BasicCommands {
     }
 
 
-    public String performBasicCommand(GameServer.CommandType command) {
+    public String performBasicCommand(GameServer.CommandType command, ArrayList <String> tokenizedCommand) {
         switch (command) {
             case INVENTORY:
                 ArrayList <String> result = checkInventory();
                 String output = String.join(", ", result) + "\n";
                 return output;
             case GET:
-                performGetAction();
+                //performGetAction(tokenizedCommand);
                 break;
             case DROP:
                 performDropAction();
                 break;
             case LOOK:
-                performLookAction();
-                break;
+                output = performLookAction();
+                return output;
             case GOTO:
-                performGotoAction();
+                //performGotoAction();
                 break;
             default:
                 // Error performing action
@@ -44,19 +45,37 @@ public class BasicCommands {
 
     private void performGetAction() {
         System.out.println("performGetAction() called");
+
     }
 
     private void performDropAction() {
         System.out.println("performDropAction() called");
     }
 
-    private void performLookAction() {
+    private String performLookAction() {
         System.out.println("performLookAction() called");
+        return serverState.getCurrentLocation().getName();
     }
 
-    private void performGotoAction() {
-        System.out.println("performGotoAction() called");
-    }
+    /*private void performGotoAction(ArrayList<String> tokenizedCommand) {
+        if (tokenizedCommand.size() < 2) {
+            // not enough arguments
+            return;
+        }
+        String destination = tokenizedCommand.get(1);
+        Location currentLocation = serverState.
+        ArrayList <Path> paths = currentLocation.getPaths();
+        if (paths.containsKey(destination)) {
+            // update current location to the destination
+            serverState.setLocation(paths.get(destination));
+            // perform any actions needed for entering the new location
+            performLookAction();
+        } else {
+            // invalid destination
+            System.out.println("You can't go there.");
+        }
+    }*/
+
 
 }
 

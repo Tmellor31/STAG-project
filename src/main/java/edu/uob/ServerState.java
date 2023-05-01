@@ -13,6 +13,8 @@ public class ServerState {
 
     private HashMap<String, HashSet<GameAction>> actions = new HashMap<String, HashSet<GameAction>>();
 
+    private Location currentLocation;
+
 
     public ArrayList <String> getInventoryList () {
         ArrayList<String> itemNames = new ArrayList<String>();
@@ -25,17 +27,27 @@ public class ServerState {
         locationMap.put(location.getName(), location);
     }
 
-    public String getFirstLocationName() throws Exception {
+    public Location getFirstLocation(){
         for (Location location : locationMap.values()) {
             if (location.getIsStart()) {
-                return location.getName();
+                return location;
             }
         }
-        throw new Exception("No start location found");
+        System.out.println("No locations found");
+        return null;
     }
+
 
     public Location getLocation(String locationName) {
         return locationMap.get(locationName);
+    }
+
+    public Location getCurrentLocation(){
+       return this.currentLocation;
+    }
+
+    public void setCurrentLocation(Location location){
+        this.currentLocation = location;
     }
 
     public HashMap<String, HashSet<GameAction>> getActions() {
