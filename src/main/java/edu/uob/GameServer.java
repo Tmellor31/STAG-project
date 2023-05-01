@@ -61,7 +61,8 @@ public final class GameServer {
      * <p>This method handles all incoming game commands and carries out the corresponding actions.
      */
     public String handleCommand(String command) {
-        CommandType action = isBasicCommand(command);
+        ArrayList<String> tokenizedCommand = tokenizeInputString(command);
+        CommandType action = isBasicCommand(tokenizedCommand);
         String output = "default";
         if (action != CommandType.notBASIC)
         //if action is basic
@@ -69,38 +70,55 @@ public final class GameServer {
             BasicCommands basicCommands = new BasicCommands(this.serverState);// Pass the GameServer instance to BasicCommands constructor
             output = basicCommands.performBasicCommand(action); // Call the performBasicCommand method on the instance
         }
-        /*for (Map.Entry<String, Location> entry : serverState.locationMap.entrySet()) {
-            Location location = entry.getValue();
-            System.out.println(location.getName() + " : " + location.getDescription());
-            for (Path path : location.getPaths()) {
-                System.out.println("- " + path.getFrom().getName() + " to " + path.getTo().getName());
-            }
-        }Can be used to print out all locations and paths if the location hashmap is public*/
-        System.out.println(serverState.getAllTriggers());
+        System.out.println(serverState.getAllTriggers());//Prints out all triggers that have been loaded for testing purposes
         return output;
     }
 
+    private ArrayList<String> tokenizeInputString(String command) {
+        String[] tokens = command.split(" ");
+        ArrayList<String> tokenList = new ArrayList<>();
+        for (String token : tokens) {
+            tokenList.add(token);
+        }
+        return tokenList;
+    }
 
-    CommandType isBasicCommand(String command) {
-        String lowercaseCommand = command.toLowerCase(); //Ensures case insensitivity
-        if (lowercaseCommand.contains("inventory") || command.contains("inv")) {
-            return CommandType.INVENTORY;
+
+    private CommandType isBasicCommand(ArrayList<String> commandList) {
+        int count = 0; //Used to keep track of how many built-in commands there are - if more than one is found then not a valid command
+        CommandType result = CommandType.notBASIC;
+        for (String command : commandList) {
+            String lowercaseCommand = command.toLowerCase();
+            if (lowercaseCommand.equals("inventory") || lowercaseCommand.equals("inv")) {
+                result = handleBasicCommand(CommandType.INVENTORY, count, result);
+                count++;
+            } else if (lowercaseCommand.equals("get")) {
+                result = handleBasicCommand(CommandType.GET, count, result);
+                count++;
+            } else if (lowercaseCommand.equals("drop")) {
+                result = handleBasicCommand(CommandType.DROP, count, result);
+                count++;
+            } else if (lowercaseCommand.equals("goto")) {
+                result = handleBasicCommand(CommandType.GOTO, count, result);
+                count++;
+            } else if (lowercaseCommand.equals("look")) {
+                result = handleBasicCommand(CommandType.LOOK, count, result);
+                count++;
+            } else {
+                // Handle unknown command
+            }
         }
-        if (lowercaseCommand.contains("get")) {
-            return CommandType.GET;
-        }
-        if (lowercaseCommand.contains("drop")) {
-            return CommandType.DROP;
-        }
-        if (lowercaseCommand.contains("goto")) {
-            return CommandType.GOTO;
-        }
-        if (lowercaseCommand.contains("look")) {
-            return CommandType.LOOK;
+        return result;
+    }
+
+    private CommandType handleBasicCommand(CommandType commandType, int count, CommandType result) {
+        if (count == 0) {
+            return commandType;
         } else {
             return CommandType.notBASIC;
         }
     }
+
 
     //  === Methods below are there to facilitate server related operations. ===
 
