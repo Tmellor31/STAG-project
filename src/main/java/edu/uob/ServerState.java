@@ -99,5 +99,42 @@ public class ServerState {
         return triggers;
     }
 
+    public boolean areAvailable(HashSet<String> subjects) {
+        // Check if each subject is in the inventory or in the current location
+        for (String subject : subjects) {
+            boolean found = false;
+            for (GameEntity item : inventory) {
+                if (item.getName().equalsIgnoreCase(subject)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found && currentLocation != null) {
+                for (GameEntity item : currentLocation.getAllEntities()) {
+                    if (item.getName().equalsIgnoreCase(subject)) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                return false; // Subject not found
+            }
+        }
+        return true; // All subjects are available
+    }
+
+    public void moveGameEntity(GameEntity gameEntity) {
+        // Remove the entity from its current location
+        if (gameEntity.getLocation() != null) {
+            gameEntity.getLocation().removeEntity(gameEntity);
+        }
+
+        // Add the entity to the current location of the server state
+        if (getCurrentLocation() != null) {
+            getCurrentLocation().addEntity(gameEntity);
+            gameEntity.setLocation(getCurrentLocation());
+        }
+    }
 }
 

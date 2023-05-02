@@ -66,13 +66,24 @@ public final class GameServer {
         //if action is basic
         {
             BasicCommands basicCommands = new BasicCommands(this.serverState);// Pass the GameServer instance to BasicCommands constructor
-            output = basicCommands.performBasicCommand(action,tokenizedCommand); // Call the performBasicCommand method on the instance
+            output = basicCommands.performBasicCommand(action, tokenizedCommand); // Call the performBasicCommand method on the instance
+            return output;
         }
-        if (isLoadedAction(tokenizedCommand) != null){
-            output = ("Trigger name was ") + isLoadedAction(tokenizedCommand).getNarration();
-            //output = loadedActions.performLoadedAction(action,tokenizedCommand);
+        GameAction gameAction = getLoadedAction(tokenizedCommand);//Start of non-built in commands
+        if (gameAction == null) {
+            output = ("Not a valid command");
+            return output;
         }
-        System.out.println(serverState.getAllTriggers());//Prints out all triggers that have been loaded for testing purposes
+        HashSet<String> subjects = checkSubjects(gameAction.getSubjects(), tokenizedCommand);
+        if (subjects == null) { //All commands must contain atleast one subject
+            output = ("Commands must contain at least one subject");
+            return output;
+        }
+        output = ("Subjects given were ") + subjects;
+        HashSet<String> produced = checkProduced(gameAction.getProduced(), tokenizedCommand);
+        HashSet<String> consumed = checkConsumed(gameAction.getConsumed(), tokenizedCommand);
+        String narration = gameAction.getNarration();
+        performAction(gameAction,subjects,produced,consumed,narration);
         return output;
     }
 
@@ -86,8 +97,8 @@ public final class GameServer {
     }
 
 
-    private GameAction isLoadedAction(ArrayList<String> tokenizedCommand) {
-        //Function checks if there is more than one action referenced, multiple references to one action are fine
+    private GameAction getLoadedAction(ArrayList<String> tokenizedCommand) {
+        //Function checks if there is more than one action referenced, multiple references to one action are fine.
         Set<GameAction> validActions = new HashSet<>(); //Set helps to prevent duplication
         for (String token : tokenizedCommand) {
             Set<GameAction> actionSet = serverState.getActions().get(token);
@@ -104,9 +115,50 @@ public final class GameServer {
         }
     }
 
+    private String performAction(GameAction gameAction, HashSet<String> subjects, HashSet<String> produced, HashSet<String> consumed, String narration) {
+        if (!serverState.areAvailable(subjects)) {
+            String output = ("Provided subjects are unavailable - check your inventory and location");
+            return output;
+        }
+        for (String item : produced){
+            serverState.moveGameEntity
+        }
+    }
 
 
+    private HashSet<String> checkSubjects(HashSet<String> subjects, ArrayList<String> tokenizedCommand) {
+        if (subjects == null || subjects.isEmpty()) {
+            return null; // No subjects to check against
+        }
 
+        HashSet<String> matchingSubjects = new HashSet<>();
+        for (String token : tokenizedCommand) {
+            if (subjects.contains(token)) {
+                matchingSubjects.add(token);
+            }
+        }
+        return matchingSubjects;
+    }
+
+    private HashSet<String> checkProduced(HashSet<String> produced, ArrayList<String> tokenizedCommand) {
+        HashSet<String> matchingProduced = new HashSet<>();
+        for (String token : tokenizedCommand) {
+            if (produced.contains(token)) {
+                matchingProduced.add(token);
+            }
+        }
+        return matchingProduced;
+    }
+
+    private HashSet<String> checkConsumed(HashSet<String> consumed, ArrayList<String> tokenizedCommand) {
+        HashSet<String> matchingConsumed = new HashSet<>();
+        for (String token : tokenizedCommand) {
+            if (consumed.contains(token)) {
+                matchingConsumed.add(token);
+            }
+        }
+        return matchingConsumed;
+    }
 
     private CommandType isBasicCommand(ArrayList<String> commandList) {
         int count = 0; //Used to keep track of how many built-in commands there are - if more than one is found then not a valid command

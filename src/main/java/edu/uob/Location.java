@@ -144,4 +144,33 @@ public class Location {
         }
         return null;
     }
+
+    public void removeEntity(GameEntity entity) {
+        if (entity instanceof Character) {
+            characters.remove((Character) entity);
+        } else if (entity instanceof Artefact) {
+            artefacts.remove((Artefact) entity);
+        } else if (entity instanceof Furniture) {
+            furniture.remove((Furniture) entity);
+        }
+    }
+
+    public void addEntity(GameEntity entity) {
+        if (entity instanceof Character) {
+            addCharacter((Character) entity);
+        } else if (entity instanceof Artefact) {
+            addArtefact((Artefact) entity);
+        } else if (entity instanceof Furniture) {
+            addFurniture((Furniture) entity);
+        }
+    }
+
+    public ArrayList<GameEntity> getAllEntities() {
+        ArrayList<GameEntity> entities = new ArrayList<>();
+        entities.addAll(characters);
+        entities.addAll(artefacts);
+        entities.addAll(furniture);
+        return entities;
+    }
+
 }
