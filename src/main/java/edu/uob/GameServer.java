@@ -79,18 +79,17 @@ public final class GameServer {
             output = ("Commands must contain at least one subject");
             return output;
         }
-        if (targetSubjects.size() < countEntities(tokenizedCommand)){
+        if (targetSubjects.size() < countEntities(tokenizedCommand)) {
             output = ("Extraneous entities found within this command: ") + command;
             return output;
         }
 
         output = ("Subjects given were ") + targetSubjects;
-        HashSet<String> produced = checkProduced(gameAction.getProduced(), tokenizedCommand);
-        System.out.println(produced);
-        HashSet<String> consumed = checkConsumed(gameAction.getConsumed(), tokenizedCommand);
-        System.out.println(consumed);
+        HashSet<String> produced = gameAction.getProduced();
+        HashSet<String> consumed = gameAction.getConsumed();
         String narration = gameAction.getNarration();
         output = performAction(gameAction, targetSubjects, produced, consumed, narration);
+        System.out.println(output);
         return output;
     }
 
@@ -133,15 +132,23 @@ public final class GameServer {
         if (!serverState.areAvailable(subjects)) {
             return output;
         }
+        System.out.println("produced here" + produced);
         for (String item : produced) {
             GameEntity entity = serverState.getEntityByName(item);
-            System.out.println(item);
-            serverState.fetchGameEntity(entity);
+            System.out.println("BOOM");
+            if (entity == null) {
+                continue;
+            }
+            serverState.moveEntityToCurrentLocation(entity);
         }
+        System.out.println(consumed);
         for (String item : consumed) {
             GameEntity entity = serverState.getEntityByName(item);
-            System.out.println(item);
+            if (entity == null) {
+                continue;
+            }
             serverState.consumeGameEntity(entity);
+
         }
         output = narration;
         return output;
@@ -160,26 +167,6 @@ public final class GameServer {
             }
         }
         return matchingSubjects;
-    }
-
-    private HashSet<String> checkProduced(HashSet<String> produced, ArrayList<String> tokenizedCommand) {
-        HashSet<String> matchingProduced = new HashSet<>();
-        for (String token : tokenizedCommand) {
-            if (produced.contains(token)) {
-                matchingProduced.add(token);
-            }
-        }
-        return matchingProduced;
-    }
-
-    private HashSet<String> checkConsumed(HashSet<String> consumed, ArrayList<String> tokenizedCommand) {
-        HashSet<String> matchingConsumed = new HashSet<>();
-        for (String token : tokenizedCommand) {
-            if (consumed.contains(token)) {
-                matchingConsumed.add(token);
-            }
-        }
-        return matchingConsumed;
     }
 
     private CommandType isBasicCommand(ArrayList<String> commandList) {

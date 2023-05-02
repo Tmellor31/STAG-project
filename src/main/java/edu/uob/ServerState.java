@@ -137,10 +137,8 @@ public class ServerState {
         return null;
     }
 
-    public void fetchGameEntity(GameEntity gameEntity) {
+    public void moveEntityToCurrentLocation(GameEntity gameEntity) {
         // Remove the entity from its current location
-        System.out.println(gameEntity.getName());
-        System.out.println(getCurrentLocation().getName());
         if (gameEntity.getLocation() != null) {
             gameEntity.getLocation().removeEntity(gameEntity);
         }
