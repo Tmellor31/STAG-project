@@ -9,9 +9,7 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -70,8 +68,8 @@ public final class GameServer {
             BasicCommands basicCommands = new BasicCommands(this.serverState);// Pass the GameServer instance to BasicCommands constructor
             output = basicCommands.performBasicCommand(action,tokenizedCommand); // Call the performBasicCommand method on the instance
         }
-        if (isLoadedAction(tokenizedCommand)){
-            output = ("Found a trigger");
+        if (isLoadedAction(tokenizedCommand) != null){
+            output = ("Trigger name was ") + isLoadedAction(tokenizedCommand).getNarration();
             //output = loadedActions.performLoadedAction(action,tokenizedCommand);
         }
         System.out.println(serverState.getAllTriggers());//Prints out all triggers that have been loaded for testing purposes
@@ -88,14 +86,26 @@ public final class GameServer {
     }
 
 
-    private boolean isLoadedAction(ArrayList<String> tokenizedCommand){
+    private GameAction isLoadedAction(ArrayList<String> tokenizedCommand) {
+        //Function checks if there is more than one action referenced, multiple references to one action are fine
+        Set<GameAction> validActions = new HashSet<>(); //Set helps to prevent duplication
         for (String token : tokenizedCommand) {
-            if (serverState.getActions().containsKey(token)){
-                return true;
+            Set<GameAction> actionSet = serverState.getActions().get(token);
+            if (actionSet != null) {
+                validActions.addAll(actionSet);
             }
         }
-        return false;
+        if (validActions.size() == 0) {
+            return null; // No actions present
+        } else if (validActions.size() > 1) {
+            return null; // Multiple actions present
+        } else {
+            return validActions.iterator().next(); // Return the single action
+        }
     }
+
+
+
 
 
     private CommandType isBasicCommand(ArrayList<String> commandList) {
