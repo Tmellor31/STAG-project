@@ -20,9 +20,38 @@ public class ServerState {
         ArrayList<String> itemNames = new ArrayList<String>();
         for (GameEntity item: inventory){
             itemNames.add(item.getName());
+            //itemNames.add(item.getDescription()); Dont think is needed - displays descriptions of items as well
         }
         return itemNames;
     }
+
+    public void addToInventory(GameEntity gameEntity) {
+        inventory.add(gameEntity);
+    }
+
+    public void removeFromInventory(String artefactName) {
+        for (GameEntity item : inventory) {
+            if (item instanceof Artefact && item.getName().equalsIgnoreCase(artefactName)) {
+                inventory.remove(item);
+                return;
+            }
+        }
+        // Artefact not found in inventory
+    }
+
+
+    public String getArtefactDescription(String artefactName) {
+        for (GameEntity item : inventory) {
+            if (item instanceof Artefact && item.getName().equalsIgnoreCase(artefactName)) {
+                return item.getDescription();
+            }
+        }
+        return null; // Artefact not found in inventory
+    }
+
+
+
+
     public void addLocation(Location location) {
         locationMap.put(location.getName(), location);
     }

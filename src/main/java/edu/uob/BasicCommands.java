@@ -19,11 +19,11 @@ public class BasicCommands {
                 String output = String.join(", ", result) + "\n";
                 return output;
             case GET:
-                //performGetAction(tokenizedCommand);
-                break;
+                output = performGetAction(tokenizedCommand);
+                return output;
             case DROP:
-                performDropAction();
-                break;
+                output = performDropAction(tokenizedCommand);
+                return output;
             case LOOK:
                 output = performLookAction();
                 return output;
@@ -39,21 +39,50 @@ public class BasicCommands {
     }
 
     private ArrayList<String> checkInventory() {
-        System.out.println("checkInventory() called");
         return serverState.getInventoryList();
     }
 
-    private void performGetAction() {
-        System.out.println("performGetAction() called");
+    private String performGetAction(ArrayList<String> tokenizedCommand) {
+            int getIndex = tokenizedCommand.indexOf("get");
+            String output = ("No artefact found after get command");
+            if (getIndex != -1 && getIndex + 1 < tokenizedCommand.size()) {
+                //If statement checks for get command and an artefact following it
+                String artefactName = tokenizedCommand.get(getIndex + 1);
+                Artefact artefact = serverState.getCurrentLocation().getArtefactByName(artefactName);
+                if (artefact == null) {//if artefact is not found
+                    output = ("The location you are in doesn't contain the artefact '" + artefactName + "'");
+                    return output;
+                }
+                serverState.addToInventory(artefact);
+                serverState.getCurrentLocation().removeArtefact(artefact);
+                output = ("You added the artefact '" + artefactName + "' to your inventory!");
+                return output;
+            }
+            return output;
+        }
 
-    }
+    private String performDropAction(ArrayList<String> tokenizedCommand) {
+        int dropIndex = tokenizedCommand.indexOf("drop");
+        String output = ("No artefact found after drop command");
+        if (dropIndex != -1 && dropIndex + 1 < tokenizedCommand.size()) {
+            //If statement checks for drop command and an artefact following it
+            String artefactName = tokenizedCommand.get(dropIndex + 1);
+            String artefactDescription = serverState.getArtefactDescription(artefactName);
 
-    private void performDropAction() {
-        System.out.println("performDropAction() called");
+            if (artefactDescription == null) {//if artefact is not found in inventory
+                output = ("Your inventory doesn't contain the artefact '" + artefactName + "'");
+                return output;
+            }
+            Artefact artefact = new Artefact(artefactName, artefactDescription);
+            serverState.removeFromInventory(artefactName);
+            serverState.getCurrentLocation().addArtefact(artefact);
+            output = ("You placed the artefact '" + artefactName + "' in the current location!");
+            return output;
+        }
+        return output;
     }
 
     private String performLookAction() {
-        System.out.println("performLookAction() called");
         String currentRoom = serverState.getCurrentLocation().getName();
         String roomDescription = serverState.getCurrentLocation().getDescription();
         String artefactsDescriptions = serverState.getCurrentLocation().getArtefactDescriptions();
