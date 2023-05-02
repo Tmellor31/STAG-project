@@ -76,15 +76,15 @@ public class DotFileLoader {
                     String entityDescription = entityDetails.getAttribute("description");
                     switch (entityType) {
                         case "furniture":
-                            Furniture newFurniture = new Furniture(entityName, entityDescription);
+                            Furniture newFurniture = new Furniture(entityName, entityDescription,newLocation);
                             newLocation.addFurniture(newFurniture);
                             break;
                         case "artefacts":
-                            Artefact newArtefact = new Artefact(entityName, entityDescription);
+                            Artefact newArtefact = new Artefact(entityName, entityDescription,newLocation);
                             newLocation.addArtefact(newArtefact);
                             break;
                         case "characters":
-                            Character newCharacter = new Character(entityName, entityDescription);
+                            Character newCharacter = new Character(entityName, entityDescription,newLocation);
                             newLocation.addCharacter(newCharacter);
                             break;
                         default:

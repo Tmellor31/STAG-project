@@ -73,7 +73,7 @@ public class BasicCommands {
                 output = ("Your inventory doesn't contain the artefact '" + artefactName + "'");
                 return output;
             }
-            Artefact artefact = new Artefact(artefactName, artefactDescription);
+            Artefact artefact = new Artefact(artefactName, artefactDescription,serverState.getCurrentLocation());
             serverState.removeFromInventory(artefactName);
             serverState.getCurrentLocation().addArtefact(artefact);
             output = ("You placed the artefact '" + artefactName + "' in the current location!");
