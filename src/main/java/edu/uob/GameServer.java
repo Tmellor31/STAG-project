@@ -116,13 +116,20 @@ public final class GameServer {
     }
 
     private String performAction(GameAction gameAction, HashSet<String> subjects, HashSet<String> produced, HashSet<String> consumed, String narration) {
+        String output = ("Provided subjects are unavailable - check your inventory and location");
         if (!serverState.areAvailable(subjects)) {
-            String output = ("Provided subjects are unavailable - check your inventory and location");
             return output;
         }
         for (String item : produced){
-            serverState.moveGameEntity
+            GameEntity entity = serverState.getEntityByName(item);
+            serverState.fetchGameEntity(entity);
         }
+        for (String item : consumed){
+            GameEntity entity = serverState.getEntityByName(item);
+            serverState.consumeGameEntity(entity);
+        }
+        output = narration;
+        return output;
     }
 
 

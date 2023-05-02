@@ -124,7 +124,28 @@ public class ServerState {
         return true; // All subjects are available
     }
 
-    public void moveGameEntity(GameEntity gameEntity) {
+    public GameEntity getEntityByName(String name) {
+        // Search for the entity in the inventory
+        for (GameEntity item : inventory) {
+            if (item.getName().equalsIgnoreCase(name)) {
+                return item;
+            }
+        }
+
+        // Search for the entity in all locations
+        for (Location location : locationMap.values()) {
+            for (GameEntity item : location.getAllEntities()) {
+                if (item.getName().equalsIgnoreCase(name)) {
+                    return item;
+                }
+            }
+        }
+
+        // Entity not found
+        return null;
+    }
+
+    public void fetchGameEntity(GameEntity gameEntity) {
         // Remove the entity from its current location
         if (gameEntity.getLocation() != null) {
             gameEntity.getLocation().removeEntity(gameEntity);
@@ -135,6 +156,11 @@ public class ServerState {
             getCurrentLocation().addEntity(gameEntity);
             gameEntity.setLocation(getCurrentLocation());
         }
+    }
+
+    public void consumeGameEntity(GameEntity gameEntity) {
+        Location entityLocation = gameEntity.getLocation();
+        entityLocation.removeEntity(gameEntity);
     }
 }
 
