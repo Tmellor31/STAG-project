@@ -137,11 +137,10 @@ public final class GameServer {
             GameEntity entity = serverState.getEntityByName(item);
             serverState.moveEntityToCurrentLocation(entity);
         }
-        System.out.println(consumed);
+        System.out.println("consumed" + consumed.size());//This should be an empty hashset, but instead its a hashset of an empty string
         for (String item : consumed) {
             GameEntity entity = serverState.getEntityByName(item);
             serverState.consumeGameEntity(entity);
-
         }
         output = narration;
         return output;

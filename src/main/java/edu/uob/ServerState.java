@@ -1,6 +1,7 @@
 package edu.uob;
 
 
+import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -125,7 +126,8 @@ public class ServerState {
                 return item;
             }
         }
-
+        System.out.println("trimmedname = " + trimmedName);
+        System.out.println("Inventorylist = " + getInventoryList());
         // Search for the entity in all locations
         for (Location location : locationMap.values()) {
             for (GameEntity item : location.getAllEntities()) {
@@ -140,15 +142,12 @@ public class ServerState {
 
     public void moveEntityToCurrentLocation(GameEntity gameEntity) {
         // Remove the entity from its current location
-        if (gameEntity.getLocation() != null) {
             gameEntity.getLocation().removeEntity(gameEntity);
-        }
+
 
         // Add the entity to the current location of the server state
-        if (getCurrentLocation() != null) {
             getCurrentLocation().addEntity(gameEntity);
             gameEntity.setLocation(getCurrentLocation());
-        }
     }
 
     public void consumeGameEntity(GameEntity gameEntity) {
