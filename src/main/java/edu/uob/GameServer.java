@@ -74,16 +74,23 @@ public final class GameServer {
             output = ("Not a valid command");
             return output;
         }
-        HashSet<String> subjects = checkSubjects(gameAction.getSubjects(), tokenizedCommand);
-        if (subjects == null) { //All commands must contain atleast one subject
+        HashSet<String> targetSubjects = checkSubjects(gameAction.getSubjects(), tokenizedCommand);
+        if (targetSubjects == null) { //All commands must contain atleast one subject
             output = ("Commands must contain at least one subject");
             return output;
         }
-        output = ("Subjects given were ") + subjects;
+        if (targetSubjects.size() < countEntities(tokenizedCommand)){
+            output = ("Extraneous entities found within this command: ") + command;
+            return output;
+        }
+
+        output = ("Subjects given were ") + targetSubjects;
         HashSet<String> produced = checkProduced(gameAction.getProduced(), tokenizedCommand);
+        System.out.println(produced);
         HashSet<String> consumed = checkConsumed(gameAction.getConsumed(), tokenizedCommand);
+        System.out.println(consumed);
         String narration = gameAction.getNarration();
-        performAction(gameAction,subjects,produced,consumed,narration);
+        output = performAction(gameAction, targetSubjects, produced, consumed, narration);
         return output;
     }
 
@@ -91,11 +98,16 @@ public final class GameServer {
         String[] tokens = command.split(" ");
         ArrayList<String> tokenList = new ArrayList<>();
         for (String token : tokens) {
-            tokenList.add(token);
+            tokenList.add(token.toLowerCase()); //Ensures case insensitivity
         }
         return tokenList;
     }
 
+    public int countEntities(ArrayList<String> tokens) {
+        int nonLocationTotal = serverState.countMatchingEntities(tokens);
+        int locationTotal = serverState.countMatchingLocations(tokens);
+        return nonLocationTotal + locationTotal;
+    }
 
     private GameAction getLoadedAction(ArrayList<String> tokenizedCommand) {
         //Function checks if there is more than one action referenced, multiple references to one action are fine.
@@ -117,15 +129,18 @@ public final class GameServer {
 
     private String performAction(GameAction gameAction, HashSet<String> subjects, HashSet<String> produced, HashSet<String> consumed, String narration) {
         String output = ("Provided subjects are unavailable - check your inventory and location");
+        System.out.println(subjects);
         if (!serverState.areAvailable(subjects)) {
             return output;
         }
-        for (String item : produced){
+        for (String item : produced) {
             GameEntity entity = serverState.getEntityByName(item);
+            System.out.println(item);
             serverState.fetchGameEntity(entity);
         }
-        for (String item : consumed){
+        for (String item : consumed) {
             GameEntity entity = serverState.getEntityByName(item);
+            System.out.println(item);
             serverState.consumeGameEntity(entity);
         }
         output = narration;

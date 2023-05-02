@@ -83,13 +83,6 @@ public class ServerState {
         return actions;
     }
 
-    public ArrayList<GameAction> getAllGameActions() {//Useful for printing all actions for testing
-        ArrayList<GameAction> allGameActions = new ArrayList<>();
-        for (HashSet<GameAction> gameActions : actions.values()) {
-            allGameActions.addAll(gameActions);
-        }
-        return allGameActions;
-    }
 
     public ArrayList<String> getAllTriggers() {//Prints out all triggers currently in the game e.g. 'chop' 'cut' etc
         ArrayList<String> triggers = new ArrayList<>();
@@ -140,13 +133,14 @@ public class ServerState {
                 }
             }
         }
-
         // Entity not found
         return null;
     }
 
     public void fetchGameEntity(GameEntity gameEntity) {
         // Remove the entity from its current location
+        System.out.println(gameEntity.getName());
+        System.out.println(getCurrentLocation().getName());
         if (gameEntity.getLocation() != null) {
             gameEntity.getLocation().removeEntity(gameEntity);
         }
@@ -162,5 +156,34 @@ public class ServerState {
         Location entityLocation = gameEntity.getLocation();
         entityLocation.removeEntity(gameEntity);
     }
+
+    public int countMatchingLocations(ArrayList<String> locationNames) {
+        int count = 0;
+        for (String locationName : locationNames) {
+            if (locationMap.containsKey(locationName)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int countMatchingEntities(ArrayList<String> names) {
+        int count = 0;
+        for (GameEntity entity : inventory) {
+            if (names.contains(entity.getName())) {
+                count++;
+            }
+        }
+        for (Location location : locationMap.values()) {
+            for (GameEntity entity : location.getAllEntities()) {
+                if (names.contains(entity.getName())) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+
 }
 
