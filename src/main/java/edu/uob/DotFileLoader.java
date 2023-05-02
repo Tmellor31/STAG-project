@@ -24,7 +24,7 @@ public class DotFileLoader {
     public void loadDotFile(String filePath) {
         try {
             Parser parser = new Parser();
-            FileReader reader = new FileReader("config" + File.separator + "basic-entities.dot");
+            FileReader reader = new FileReader(filePath);
             parser.parse(reader);
             Graph wholeDocument = parser.getGraphs().get(0);
             ArrayList<Graph> sections = wholeDocument.getSubgraphs();

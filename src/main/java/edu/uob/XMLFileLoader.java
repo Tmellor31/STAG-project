@@ -26,7 +26,7 @@ public class XMLFileLoader {
     void loadXMLFile(String filePath) {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = builder.parse("config" + File.separator + "basic-actions.xml");
+            Document document = builder.parse(filePath);
             Element root = document.getDocumentElement();
             NodeList actionNodes = root.getElementsByTagName("action");
 
