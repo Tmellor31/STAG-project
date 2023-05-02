@@ -119,8 +119,9 @@ public class ServerState {
 
     public GameEntity getEntityByName(String name) {
         // Search for the entity in the inventory
+        String trimmedName = name.trim();
         for (GameEntity item : inventory) {
-            if (item.getName().equalsIgnoreCase(name)) {
+            if (item.getName().equalsIgnoreCase(trimmedName)) {
                 return item;
             }
         }
@@ -128,7 +129,7 @@ public class ServerState {
         // Search for the entity in all locations
         for (Location location : locationMap.values()) {
             for (GameEntity item : location.getAllEntities()) {
-                if (item.getName().equalsIgnoreCase(name)) {
+                if (item.getName().equalsIgnoreCase(trimmedName)) {
                     return item;
                 }
             }

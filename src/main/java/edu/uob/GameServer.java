@@ -135,18 +135,11 @@ public final class GameServer {
         System.out.println("produced here" + produced);
         for (String item : produced) {
             GameEntity entity = serverState.getEntityByName(item);
-            System.out.println("BOOM");
-            if (entity == null) {
-                continue;
-            }
             serverState.moveEntityToCurrentLocation(entity);
         }
         System.out.println(consumed);
         for (String item : consumed) {
             GameEntity entity = serverState.getEntityByName(item);
-            if (entity == null) {
-                continue;
-            }
             serverState.consumeGameEntity(entity);
 
         }
