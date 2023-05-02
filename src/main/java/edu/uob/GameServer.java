@@ -70,6 +70,10 @@ public final class GameServer {
             BasicCommands basicCommands = new BasicCommands(this.serverState);// Pass the GameServer instance to BasicCommands constructor
             output = basicCommands.performBasicCommand(action,tokenizedCommand); // Call the performBasicCommand method on the instance
         }
+        if (isLoadedAction(tokenizedCommand)){
+            output = ("Found a trigger");
+            //output = loadedActions.performLoadedAction(action,tokenizedCommand);
+        }
         System.out.println(serverState.getAllTriggers());//Prints out all triggers that have been loaded for testing purposes
         return output;
     }
@@ -81,6 +85,16 @@ public final class GameServer {
             tokenList.add(token);
         }
         return tokenList;
+    }
+
+
+    private boolean isLoadedAction(ArrayList<String> tokenizedCommand){
+        for (String token : tokenizedCommand) {
+            if (serverState.getActions().containsKey(token)){
+                return true;
+            }
+        }
+        return false;
     }
 
 
