@@ -35,12 +35,12 @@ public class Location {
         return this.isStart;
     }
 
-    public void addPath(Location from, Location to) {
-        Path path = new Path(from, to);
+    public void addPathTo(Location to) {
+        Path path = new Path(this, to);
         this.paths.add(path);
     }
 
-    public void removePath(Location to) {
+    public void removePathTo(Location to) {
         this.paths.remove(to);
     }
 

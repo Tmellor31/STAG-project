@@ -35,23 +35,26 @@ public class XMLFileLoader {
 
                 // Get the triggers for this action
                 HashSet<String> triggers = loadTriggers(actionElement.getElementsByTagName("keyphrase"));
+                System.out.println("TRIGGERS" + triggers);
 
 
                 // Create the GameAction object for this action
                 NodeList subjectNodes = actionElement.getElementsByTagName("entity");
                 HashSet<String> subjects = new HashSet<>();
                 for (int j = 0; j < subjectNodes.getLength(); j++) {
-                    subjects.add(subjectNodes.item(j).getTextContent());
+                    subjects.add(subjectNodes.item(j).getTextContent().trim());
                 }
                 NodeList consumedNodes = actionElement.getElementsByTagName("consumed");
+                System.out.println("CONSUMED NODES " + consumedNodes.getLength());
                 HashSet<String> consumed = new HashSet<>();
                 for (int j = 0; j < consumedNodes.getLength(); j++) {
-                    consumed.add(consumedNodes.item(j).getTextContent());
+                    System.out.println("CONSUMED NODE" + consumedNodes.item(j));
+                    consumed.add(consumedNodes.item(j).getTextContent().trim());
                 }
                 NodeList producedNodes = actionElement.getElementsByTagName("produced");
                 HashSet<String> produced = new HashSet<>();
                 for (int j = 0; j < producedNodes.getLength(); j++) {
-                    produced.add(producedNodes.item(j).getTextContent());
+                    produced.add(producedNodes.item(j).getTextContent().trim());
                 }
                 String narration = actionElement.getElementsByTagName("narration").item(0).getTextContent();
 

@@ -61,7 +61,7 @@ public class DotFileLoader {
         for (int i = 0; i < (locationsToAdd.size()); i++) {
             Graph location = locationsToAdd.get(i);
             Node locationDetails = location.getNodes(false).get(0);
-            String locationName = locationDetails.getId().getId();
+            String locationName = locationDetails.getId().getId().trim();
             String locationDescription = locationDetails.getAttribute("description");
             Location newLocation = new Location(locationName, locationDescription, i == 0);
 
@@ -92,6 +92,7 @@ public class DotFileLoader {
                             break;
                     }
                 }
+                System.out.println(newLocation.getName());
                 serverState.addLocation(newLocation);
             }
         }
@@ -101,15 +102,15 @@ public class DotFileLoader {
         public void addPaths (ArrayList < Edge > pathsToAdd) {
             for (Edge path : pathsToAdd) {
                 Node fromLocation = path.getSource().getNode();
-                String fromName = fromLocation.getId().getId();
+                String fromName = fromLocation.getId().getId().trim();
                 Node toLocation = path.getTarget().getNode();
-                String toName = toLocation.getId().getId();
+                String toName = toLocation.getId().getId().trim();
 
                 // Find the locations in the server state
                 Location from = serverState.getLocation(fromName);
                 Location to = serverState.getLocation(toName);
 
-                from.addPath(from, to);
+                from.addPathTo(to);
             }
         }
     }

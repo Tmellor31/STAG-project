@@ -89,7 +89,6 @@ public final class GameServer {
             return output;
         }
 
-        output = ("Subjects given were ") + targetSubjects;
         HashSet<String> produced = gameAction.getProduced();
         HashSet<String> consumed = gameAction.getConsumed();
         String narration = gameAction.getNarration();
@@ -140,24 +139,26 @@ public final class GameServer {
         }
         System.out.println("produced here" + produced);
         for (String item : produced) {
-            Location location = serverState.getLocation(item);
-            if (location != null){
-                serverState.produceLocation(serverState.getCurrentLocation(),location);
+            String trimmedItem = item.trim();
+            Location location = serverState.getLocation(trimmedItem);
+            if (location != null) {
+                serverState.produceLocation(serverState.getCurrentLocation(), location);
+            } else {
+                GameEntity entity = serverState.getEntityByName(trimmedItem);
+                System.out.println("ITEM IS " + trimmedItem);
+                serverState.moveEntityToCurrentLocation(entity);
             }
-            GameEntity entity = serverState.getEntityByName(item);
-            serverState.moveEntityToCurrentLocation(entity);
-            location = null;
         }
         System.out.println("consumed" + consumed.size());//This should be an empty hashset, but instead its a hashset of an empty string
         for (String item : consumed) {
             // Only consume the entity if the item is not empty and contains letters
             Location location = serverState.getLocation(item);
-            if (location != null){
-                serverState.consumeLocation(serverState.getCurrentLocation(),location);
+            if (location != null) {
+                serverState.consumeLocation(serverState.getCurrentLocation(), location);
+            } else {
+                GameEntity entity = serverState.getEntityByName(item);
+                serverState.consumeGameEntity(entity);
             }
-            GameEntity entity = serverState.getEntityByName(item);
-            serverState.consumeGameEntity(entity);
-            location = null;
         }
         output = narration;
         return output;

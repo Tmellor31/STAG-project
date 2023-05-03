@@ -17,9 +17,9 @@ public class ServerState {
     private Location currentLocation;
 
 
-    public ArrayList <String> getInventoryList () {
+    public ArrayList<String> getInventoryList() {
         ArrayList<String> itemNames = new ArrayList<String>();
-        for (GameEntity item: inventory){
+        for (GameEntity item : inventory) {
             itemNames.add(item.getName());
             //itemNames.add(item.getDescription()); Dont think is needed - displays descriptions of items as well
         }
@@ -27,6 +27,7 @@ public class ServerState {
     }
 
     public void addToInventory(GameEntity gameEntity) {
+
         inventory.add(gameEntity);
     }
 
@@ -51,13 +52,11 @@ public class ServerState {
     }
 
 
-
-
     public void addLocation(Location location) {
         locationMap.put(location.getName(), location);
     }
 
-    public Location getFirstLocation(){
+    public Location getFirstLocation() {
         for (Location location : locationMap.values()) {
             if (location.getIsStart()) {
                 return location;
@@ -72,11 +71,11 @@ public class ServerState {
         return locationMap.get(locationName);
     }
 
-    public Location getCurrentLocation(){
-       return this.currentLocation;
+    public Location getCurrentLocation() {
+        return this.currentLocation;
     }
 
-    public void setCurrentLocation(Location location){
+    public void setCurrentLocation(Location location) {
         this.currentLocation = location;
     }
 
@@ -122,14 +121,23 @@ public class ServerState {
         return true; // All subjects are available
     }
 
-
-    public GameEntity getEntityByName(String name) {
-        // Search for the entity in the inventory
+    public GameEntity getEntityFromInventory(String name) {
         String trimmedName = name.trim();
         for (GameEntity item : inventory) {
             if (item.getName().equalsIgnoreCase(trimmedName)) {
                 return item;
             }
+        }
+        return null;
+    }
+
+
+    public GameEntity getEntityByName(String name) {
+        // Search for the entity in the inventory
+        String trimmedName = name.trim();
+        GameEntity inventoryEntity = getEntityFromInventory(trimmedName);
+        if (inventoryEntity != null) {
+            return inventoryEntity;
         }
         System.out.println("trimmedname = " + trimmedName);
         System.out.println("Inventorylist = " + getInventoryList());
@@ -147,25 +155,31 @@ public class ServerState {
 
     public void moveEntityToCurrentLocation(GameEntity gameEntity) {
         // Remove the entity from its current location
-            gameEntity.getLocation().removeEntity(gameEntity);
+        gameEntity.getLocation().removeEntity(gameEntity);
 
 
         // Add the entity to the current location of the server state
-            getCurrentLocation().addEntity(gameEntity);
-            gameEntity.setLocation(getCurrentLocation());
+        getCurrentLocation().addEntity(gameEntity);
+        gameEntity.setLocation(getCurrentLocation());
     }
 
     public void produceLocation(Location from, Location to) {
-        from.addPath(from, to);
+        from.addPathTo(to);
     }
 
     public void consumeGameEntity(GameEntity gameEntity) {
-        Location entityLocation = gameEntity.getLocation();
-        entityLocation.removeEntity(gameEntity);
+        GameEntity inventoryEntity = getEntityFromInventory(gameEntity.getName());
+        if (inventoryEntity != null) {
+            removeFromInventory(gameEntity.getName());
+        } else {
+            Location entityLocation = gameEntity.getLocation();
+            entityLocation.removeEntity(gameEntity);
+        }
+
     }
 
     public void consumeLocation(Location from, Location to) {
-        from.removePath(to);
+        from.removePathTo(to);
     }
 
     public int countMatchingLocations(ArrayList<String> locationNames) {
