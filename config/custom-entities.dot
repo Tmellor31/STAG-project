@@ -41,6 +41,7 @@ digraph layout {
             subgraph characters {
                 node [shape = "ellipse"];
                 elf [description = "An angry looking Elf"];
+                dwarf [description = "A jolly looking (quite chubby) dwarf"];
             }
         }
 

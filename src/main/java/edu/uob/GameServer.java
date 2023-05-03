@@ -60,42 +60,72 @@ public final class GameServer {
      */
     public String handleCommand(String command) {
         ArrayList<String> tokenizedCommand = tokenizeInputString(command);
-        CommandType action = isBasicCommand(tokenizedCommand);
-        GameAction gameAction = getLoadedAction(tokenizedCommand);
+        CommandType commandType = isBasicCommand(tokenizedCommand);
+        Set<GameAction> gameActions = getLoadedAction(tokenizedCommand);
         String output = "Not a valid command, may have entered too many built-in commands or not specified subjects for basic ones";
-        if (action != CommandType.notBASIC && gameAction != null) {
+        if (commandType != CommandType.notBASIC && gameActions != null) {
             output = ("Composite commands are not supported, please enter one action at a time");
             return output;
         }
-        if (action != CommandType.notBASIC)
+        if (commandType != CommandType.notBASIC)
         //if action is basic
         {
             BasicCommands basicCommands = new BasicCommands(this.serverState);// Pass the GameServer instance to BasicCommands constructor
-            output = basicCommands.performBasicCommand(action, tokenizedCommand); // Call the performBasicCommand method on the instance
+            output = basicCommands.performBasicCommand(commandType, tokenizedCommand); // Call the performBasicCommand method on the instance
             return output;
         }
         //Start of non-built in commands
-        if (gameAction == null) {
+        if (gameActions == null) {
             output = ("Not a valid command");
             return output;
         }
-        HashSet<String> targetSubjects = checkSubjects(gameAction.getSubjects(), tokenizedCommand);
-        if (targetSubjects == null) { //All commands must contain atleast one subject
+        GameAction action;
+        if (gameActions.size() > 1) {
+            action = getActionFromSubjects(gameActions, tokenizedCommand);
+            if (action == null) {
+                return "This is an ambigous command";
+            }
+        }
+        else {
+            action = gameActions.iterator().next(); //Only one action
+        }
+        HashSet<String> subjectsInCommand = checkSubjects(action.getSubjects(), tokenizedCommand);
+        if (subjectsInCommand == null) { //All commands must contain atleast one subject
             output = ("Commands must contain at least one subject");
             return output;
         }
-        if (targetSubjects.size() < countEntities(tokenizedCommand)) {
+        if (subjectsInCommand.size() < countEntities(tokenizedCommand)) {
             output = ("Extraneous entities found within this command: ") + command;
+            System.out.println(subjectsInCommand.size());
+            System.out.println(countEntities(tokenizedCommand));
             return output;
         }
 
-        HashSet<String> produced = gameAction.getProduced();
-        HashSet<String> consumed = gameAction.getConsumed();
-        String narration = gameAction.getNarration();
-        output = performAction(gameAction, targetSubjects, produced, consumed, narration);
+        HashSet<String> produced = action.getProduced();
+        HashSet<String> consumed = action.getConsumed();
+        String narration = action.getNarration();
+        output = performAction(action, subjectsInCommand, produced, consumed, narration);
         System.out.println(output);
         return output;
     }
+
+    private GameAction getActionFromSubjects(Set<GameAction> gameActions, ArrayList<String> tokenizedCommand) {
+        ArrayList<ActionsWithMatchingSubjects> actionsWithMatchingSubjectsArrayList = new ArrayList<>();
+        for (GameAction action : gameActions) {
+            HashSet<String> subjectsInCommand = checkSubjects(action.getSubjects(), tokenizedCommand);
+            actionsWithMatchingSubjectsArrayList.add(new ActionsWithMatchingSubjects(action, subjectsInCommand));
+        }
+        Collections.sort(actionsWithMatchingSubjectsArrayList, (first, second) -> {
+            return second.matchingSubjects.size() - first.matchingSubjects.size();
+        });
+        if (actionsWithMatchingSubjectsArrayList.get(0).matchingSubjects.size() ==
+                actionsWithMatchingSubjectsArrayList.get(1).matchingSubjects.size()) {
+            return null; //ambigous statement
+        } else {
+            return actionsWithMatchingSubjectsArrayList.get(0).action;
+        }
+    }
+
 
     private ArrayList<String> tokenizeInputString(String command) {
         String[] tokens = command.split(" ");
@@ -112,23 +142,28 @@ public final class GameServer {
         return nonLocationTotal + locationTotal;
     }
 
-    private GameAction getLoadedAction(ArrayList<String> tokenizedCommand) {
+    private Set<GameAction> getLoadedAction(ArrayList<String> tokenizedCommand) {
         //Function checks if there is more than one action referenced, multiple references to one action are fine.
-        Set<GameAction> validActions = new HashSet<>(); //Set helps to prevent duplication
+        //Set<GameAction> validActions = new HashSet<>(); //Set helps to prevent duplication
+        HashMap<String, Set<GameAction>> validActions = new HashMap<>();
+
         for (String token : tokenizedCommand) {
             Set<GameAction> actionSet = serverState.getActions().get(token);
             if (actionSet != null) {
-                validActions.addAll(actionSet);
+                validActions.put(token, actionSet);
             }
         }
         if (validActions.size() == 0) {
             return null; // No actions present
-        } else if (validActions.size() > 1) {
-            return null; // Multiple actions present
-        } else {
-            return validActions.iterator().next(); // Return the single action
         }
+
+        if (validActions.size() > 1) {
+            return null; // Multiple actions present
+        }
+
+        return validActions.values().iterator().next();
     }
+
 
     private String performAction(GameAction gameAction, HashSet<String> subjects, HashSet<String> produced, HashSet<String> consumed, String narration) {
         String output;

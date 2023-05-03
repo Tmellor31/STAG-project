@@ -77,6 +77,23 @@
 
     <action>
         <triggers>
+            <keyphrase>give</keyphrase>
+        </triggers>
+        <subjects>
+            <entity>potion</entity>
+            <entity>dwarf</entity>
+        </subjects>
+        <consumed>
+            <entity>potion</entity>
+        </consumed>
+        <produced>
+            <entity>empty_potion_bottle</entity>
+        </produced>
+        <narration>The dwarf drinks the potion and lets out a hearty laugh, followed by a big burp</narration>
+    </action>
+
+    <action>
+        <triggers>
             <keyphrase>fight</keyphrase>
             <keyphrase>hit</keyphrase>
             <keyphrase>attack</keyphrase>
