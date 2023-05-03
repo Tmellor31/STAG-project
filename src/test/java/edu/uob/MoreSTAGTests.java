@@ -111,5 +111,29 @@ class MoreSTAGTests {
         response = response.toLowerCase();
         assertTrue(response.contains("lumberjack"), "Did not see the name");
     }
+
+    @Test
+    void testGameToCompletion() {
+        sendCommandToServer("simon: get axe");
+        sendCommandToServer("simon: get coin");
+        sendCommandToServer("goto forest");
+        sendCommandToServer("chop tree");
+        sendCommandToServer("get log");
+        sendCommandToServer("get key");
+        sendCommandToServer("goto cabin");
+        sendCommandToServer("unlock trapdoor");
+        sendCommandToServer("goto cellar");
+        sendCommandToServer("pay elf");
+        sendCommandToServer("get shovel");
+        sendCommandToServer("goto cabin");
+        sendCommandToServer("goto forest");
+        sendCommandToServer("goto riverbank");
+        sendCommandToServer("use log as bridge for river");
+        sendCommandToServer("goto clearing");
+        sendCommandToServer("dig ground");
+        String response = sendCommandToServer("get gold");
+        response = response.toLowerCase();
+        assertTrue(response.contains("you added the"),"Did not add gold at the end of the game");
+    }
 }
 
