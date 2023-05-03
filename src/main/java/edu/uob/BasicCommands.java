@@ -95,23 +95,38 @@ public class BasicCommands {
         return output;
     }
 
-    private String performGotoAction(ArrayList<String> tokenizedCommand) { //Remember forest goto is invalid (built-in), has to be command first then subject entity
+    private String performGotoAction(ArrayList<String> tokenizedCommand) {
         int gotoIndex = tokenizedCommand.indexOf("goto");
-        String output = ("No location found after goto command");
+        String output = "No location found after 'goto' in this command: " + tokenizedCommand;
+        int numValidLocations = 0;
+        String validLocation = null;
         if (gotoIndex != -1 && gotoIndex + 1 < tokenizedCommand.size()) {
-            //If statement checks for goto command and a location following it
-            String location = tokenizedCommand.get(gotoIndex + 1);
-            Location newLocation = serverState.getLocation(location);
-            if (!serverState.getCurrentLocation().hasPathTo(newLocation)) {
-                output = ("The location you are in doesn't have a path to the targeted location (" + location + ")");
-                return output;
+            // Check if any subsequent tokens represent a valid location
+            for (int i = gotoIndex + 1; i < tokenizedCommand.size(); i++) {
+                String location = tokenizedCommand.get(i);
+                if (serverState.getLocation(location) != null) {
+                    // Found a valid location
+                    numValidLocations++;
+                    validLocation = location;
+                }
             }
-            serverState.setCurrentLocation(newLocation);
-            output = ("You have moved to " + location + ".");
-            return output;
+            if (numValidLocations == 1) {
+                // Only one valid location found, move there and return success message
+                Location newLocation = serverState.getLocation(validLocation);
+                if (!serverState.getCurrentLocation().hasPathTo(newLocation)) {
+                    output = "The location you are in doesn't have a path to the targeted location (" + validLocation + ")";
+                } else {
+                    serverState.setCurrentLocation(newLocation);
+                    output = "You have moved to " + validLocation + ".";
+                }
+            } else if (numValidLocations > 1) {
+                // Multiple valid locations found, return error message
+                output = "Ambiguous command, please only enter one location";
+            }
         }
         return output;
     }
+
 }
 
 

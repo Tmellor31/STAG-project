@@ -76,6 +76,22 @@ class MoreSTAGTests {
     }
 
     @Test
+    void testGotoMessages(){
+        String response = sendCommandToServer("simon: forest goto");
+        String response2 = sendCommandToServer("simon: goto forest");
+        String ambCheck = sendCommandToServer("simon: goto cabin riverbank");
+        String decorationCheck = sendCommandToServer("simon: goto big cabin");
+        response = response.toLowerCase();
+        assertFalse(response.contains("you have moved"), "Moved despite incorrect formatting");
+        response2 = response2.toLowerCase();
+        assertTrue(response2.contains("you have moved"), "Did not move despite correct command");
+        ambCheck = ambCheck.toLowerCase();
+        assertTrue(ambCheck.contains("ambiguous"), "Didn't find multiple valid locations command");
+        decorationCheck = decorationCheck.toLowerCase();
+        assertTrue(decorationCheck.contains("you have moved"), "Didn't move when using decorative commands");
+    }
+
+    @Test
     void testProduce(){
         sendCommandToServer("simon: get axe");
         sendCommandToServer("simon: goto forest");
