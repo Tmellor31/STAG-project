@@ -94,20 +94,24 @@ public class ServerState {
     }
 
     public boolean areAvailable(HashSet<String> subjects) {
-        // Check if each subject is in the inventory or in the current location
+        //First checks if the subject is the current location, then the inventory and the current location for the subject.
         for (String subject : subjects) {
             boolean found = false;
-            for (GameEntity item : inventory) {
-                if (item.getName().equalsIgnoreCase(subject)) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found && currentLocation != null) {
-                for (GameEntity item : currentLocation.getAllEntities()) {
+            if (currentLocation != null && currentLocation.getName().equalsIgnoreCase(subject)) {
+                found = true;
+            } else {
+                for (GameEntity item : inventory) {
                     if (item.getName().equalsIgnoreCase(subject)) {
                         found = true;
                         break;
+                    }
+                }
+                if (!found && currentLocation != null) {
+                    for (GameEntity item : currentLocation.getAllEntities()) {
+                        if (item.getName().equalsIgnoreCase(subject)) {
+                            found = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -117,6 +121,7 @@ public class ServerState {
         }
         return true; // All subjects are available
     }
+
 
     public GameEntity getEntityByName(String name) {
         // Search for the entity in the inventory
@@ -150,9 +155,17 @@ public class ServerState {
             gameEntity.setLocation(getCurrentLocation());
     }
 
+    public void produceLocation(Location from, Location to) {
+        from.addPath(from, to);
+    }
+
     public void consumeGameEntity(GameEntity gameEntity) {
         Location entityLocation = gameEntity.getLocation();
         entityLocation.removeEntity(gameEntity);
+    }
+
+    public void consumeLocation(Location from, Location to) {
+        from.removePath(to);
     }
 
     public int countMatchingLocations(ArrayList<String> locationNames) {

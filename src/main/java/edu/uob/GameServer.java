@@ -63,7 +63,7 @@ public final class GameServer {
         CommandType action = isBasicCommand(tokenizedCommand);
         GameAction gameAction = getLoadedAction(tokenizedCommand);
         String output = "Not a valid command, may have entered too many built-in commands or not specified subjects for basic ones";
-        if (action != CommandType.notBASIC && gameAction != null){
+        if (action != CommandType.notBASIC && gameAction != null) {
             output = ("Composite commands are not supported, please enter one action at a time");
             return output;
         }
@@ -140,16 +140,24 @@ public final class GameServer {
         }
         System.out.println("produced here" + produced);
         for (String item : produced) {
+            Location location = serverState.getLocation(item);
+            if (location != null){
+                serverState.produceLocation(serverState.getCurrentLocation(),location);
+            }
             GameEntity entity = serverState.getEntityByName(item);
             serverState.moveEntityToCurrentLocation(entity);
+            location = null;
         }
         System.out.println("consumed" + consumed.size());//This should be an empty hashset, but instead its a hashset of an empty string
         for (String item : consumed) {
             // Only consume the entity if the item is not empty and contains letters
-            if (!item.isEmpty() && item.matches(".*[a-zA-Z].*")){
-                GameEntity entity = serverState.getEntityByName(item);
-                serverState.consumeGameEntity(entity);
+            Location location = serverState.getLocation(item);
+            if (location != null){
+                serverState.consumeLocation(serverState.getCurrentLocation(),location);
             }
+            GameEntity entity = serverState.getEntityByName(item);
+            serverState.consumeGameEntity(entity);
+            location = null;
         }
         output = narration;
         return output;

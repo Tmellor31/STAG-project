@@ -40,6 +40,10 @@ public class Location {
         this.paths.add(path);
     }
 
+    public void removePath(Location to) {
+        this.paths.remove(to);
+    }
+
     public ArrayList<Path> getPaths() {
         return this.paths;
     }
