@@ -3,7 +3,6 @@ package edu.uob;
 import com.alexmerz.graphviz.ParseException;
 import com.alexmerz.graphviz.Parser;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
@@ -12,7 +11,6 @@ import com.alexmerz.graphviz.objects.Graph;
 import com.alexmerz.graphviz.objects.Node;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class DotFileLoader {
     private ServerState serverState;
@@ -34,16 +32,10 @@ public class DotFileLoader {
             Graph startLocation = locations.get(0); //First location in the list and therefore start location
             Node locationDetails = startLocation.getNodes(false).get(0); //Gets the nodes of the first location in this case cabin
             // Yes, you do need to get the ID twice !
-            String locationName = locationDetails.getId().getId(); //Name of first location '
             populateLocationMap(locations); //Loads locations into the serverstate
 
             // The paths will always be in the second subgraph
             ArrayList<Edge> paths = sections.get(1).getEdges();
-            Edge firstPath = paths.get(0); //This path is from cabin
-            Node fromLocation = firstPath.getSource().getNode();
-            String fromName = fromLocation.getId().getId();//cabin
-            Node toLocation = firstPath.getTarget().getNode();//to forest
-            String toName = toLocation.getId().getId();//forest
             addPaths(paths);
 
             serverState.setCurrentLocation(serverState.getFirstLocation());

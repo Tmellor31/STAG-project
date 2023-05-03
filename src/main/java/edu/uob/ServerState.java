@@ -1,7 +1,6 @@
 package edu.uob;
 
 
-import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,7 +17,7 @@ public class ServerState {
 
 
     public ArrayList<String> getInventoryList() {
-        ArrayList<String> itemNames = new ArrayList<String>();
+        ArrayList<String> itemNames = new ArrayList<>();
         for (GameEntity item : inventory) {
             itemNames.add(item.getName());
             //itemNames.add(item.getDescription()); Dont think is needed - displays descriptions of items as well

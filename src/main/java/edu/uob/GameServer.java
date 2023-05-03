@@ -24,7 +24,7 @@ public final class GameServer {
         GET,
         DROP,
         LOOK,
-        GOTO;
+        GOTO
     }
 
     private static final char END_OF_TRANSMISSION = 4;
@@ -227,8 +227,6 @@ public final class GameServer {
             } else if (lowercaseCommand.equals("look")) {
                 result = handleBasicCommand(CommandType.LOOK, count, result);
                 count++;
-            } else {
-                // Handle unknown command
             }
         }
         return result;
