@@ -87,6 +87,16 @@ public class Location {
         return sb.toString();
     }
 
+    public String getCharacterDescriptions() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Characters:\n");
+        for (Character c : characters) {
+            sb.append("- ").append(c.getName()).append(": ").append(c.getDescription()).append("\n");
+        }
+        return sb.toString();
+    }
+
+
     public String getAvailablePaths() {
         StringBuilder sb = new StringBuilder();
         sb.append("Available paths:\n");

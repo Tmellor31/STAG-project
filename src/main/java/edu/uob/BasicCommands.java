@@ -87,9 +87,11 @@ public class BasicCommands {
         String roomDescription = serverState.getCurrentLocation().getDescription();
         String artefactsDescriptions = serverState.getCurrentLocation().getArtefactDescriptions();
         String furnitureDescriptions = serverState.getCurrentLocation().getFurnitureDescriptions();
+        String characterDescriptions = serverState.getCurrentLocation().getCharacterDescriptions();
         String availablePaths = serverState.getCurrentLocation().getAvailablePaths();
         String output = currentRoom + "\n" + roomDescription + "\n" +
-                artefactsDescriptions + "\n" + furnitureDescriptions + "\n" + availablePaths;
+                artefactsDescriptions + "\n" + furnitureDescriptions + "\n" + characterDescriptions +
+                "\n" + availablePaths;
         return output;
     }
 
