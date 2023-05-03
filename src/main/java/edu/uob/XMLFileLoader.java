@@ -48,13 +48,27 @@ public class XMLFileLoader {
                 System.out.println("CONSUMED NODES " + consumedNodes.getLength());
                 HashSet<String> consumed = new HashSet<>();
                 for (int j = 0; j < consumedNodes.getLength(); j++) {
-                    System.out.println("CONSUMED NODE" + consumedNodes.item(j));
-                    consumed.add(consumedNodes.item(j).getTextContent().trim());
+                    NodeList childNodes = consumedNodes.item(j).getChildNodes();
+                    for (int k = 0; k < childNodes.getLength(); k++) {
+                        String child = childNodes.item(k).getTextContent().trim();
+                        if (child.isEmpty()){
+                            continue;
+                        }
+                        consumed.add(child);
+                    }
                 }
+
                 NodeList producedNodes = actionElement.getElementsByTagName("produced");
                 HashSet<String> produced = new HashSet<>();
                 for (int j = 0; j < producedNodes.getLength(); j++) {
-                    produced.add(producedNodes.item(j).getTextContent().trim());
+                    NodeList childNodes = producedNodes.item(j).getChildNodes();
+                    for (int k = 0; k < childNodes.getLength(); k++) {
+                        String child = childNodes.item(k).getTextContent().trim();
+                        if (child.isEmpty()){
+                            continue;
+                        }
+                        produced.add(child);
+                    }
                 }
                 String narration = actionElement.getElementsByTagName("narration").item(0).getTextContent();
 
