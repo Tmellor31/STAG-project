@@ -61,7 +61,12 @@ public final class GameServer {
     public String handleCommand(String command) {
         ArrayList<String> tokenizedCommand = tokenizeInputString(command);
         CommandType action = isBasicCommand(tokenizedCommand);
+        GameAction gameAction = getLoadedAction(tokenizedCommand);
         String output = "Not a valid command, may have entered too many built-in commands or not specified subjects for basic ones";
+        if (action != CommandType.notBASIC && gameAction != null){
+            output = ("Composite commands are not supported, please enter one action at a time");
+            return output;
+        }
         if (action != CommandType.notBASIC)
         //if action is basic
         {
@@ -69,7 +74,7 @@ public final class GameServer {
             output = basicCommands.performBasicCommand(action, tokenizedCommand); // Call the performBasicCommand method on the instance
             return output;
         }
-        GameAction gameAction = getLoadedAction(tokenizedCommand);//Start of non-built in commands
+        //Start of non-built in commands
         if (gameAction == null) {
             output = ("Not a valid command");
             return output;

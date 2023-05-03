@@ -41,9 +41,38 @@ class MoreSTAGTests {
         assertTrue(response.contains("extraneous"), "Did not see extraneous entities warning");
         assertTrue(response2.contains("extraneous"), "Did not see extraneous entities warning");
         assertFalse(notExtraneous.contains("extraneous"),"Found extraneous warning when there shouldn't be one");
-        String lookTest = sendCommandToServer("simon: look");
+    }
+
+    @Test
+    void testCompositeCommands() {
+        sendCommandToServer("simon: get axe");
+        sendCommandToServer("simon: goto forest");
+        String response = sendCommandToServer("simon: chop tree and get key");
+        String response2 = sendCommandToServer("simon: get key");
         response = response.toLowerCase();
-        assertTrue(response.contains("cabin"), "Did not see the name of the current room in response to look");
+        response2 = response2.toLowerCase();
+        assertTrue(response.contains("composite"), "Did not see composite warning");
+        assertFalse(response2.contains("composite"), "Found composite warning for single command");
+    }
+
+    @Test
+    void testPartialCommands(){
+        sendCommandToServer("simon: get axe");
+        sendCommandToServer("simon: goto forest");
+        sendCommandToServer("simon: chop tree");
+        String response = sendCommandToServer("look");
+        response = response.toLowerCase();
+        assertTrue(response.contains("log"), "Tree was not chopped despite partial command");
+    }
+
+    @Test
+    void testGotoFormatting(){
+        String response = sendCommandToServer("simon: forest goto");
+        String response2 = sendCommandToServer("simon: goto forest");
+        response = response.toLowerCase();
+        assertFalse(response.contains("you have moved"), "Moved despite incorrect formatting");
+        response2 = response2.toLowerCase();
+        assertTrue(response2.contains("you have moved"), "Did not move despite correct command");
     }
 
     @Test
