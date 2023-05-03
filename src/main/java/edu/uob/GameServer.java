@@ -83,7 +83,7 @@ public final class GameServer {
         if (gameActions.size() > 1) {
             action = getActionFromSubjects(gameActions, tokenizedCommand);
             if (action == null) {
-                return "This is an ambigous command";
+                return "This is an ambiguous command";
             }
         }
         else {
@@ -96,8 +96,6 @@ public final class GameServer {
         }
         if (subjectsInCommand.size() < countEntities(tokenizedCommand)) {
             output = ("Extraneous entities found within this command: ") + command;
-            System.out.println(subjectsInCommand.size());
-            System.out.println(countEntities(tokenizedCommand));
             return output;
         }
 
@@ -105,7 +103,6 @@ public final class GameServer {
         HashSet<String> consumed = action.getConsumed();
         String narration = action.getNarration();
         output = performAction(action, subjectsInCommand, produced, consumed, narration);
-        System.out.println(output);
         return output;
     }
 
@@ -120,7 +117,7 @@ public final class GameServer {
         });
         if (actionsWithMatchingSubjectsArrayList.get(0).matchingSubjects.size() ==
                 actionsWithMatchingSubjectsArrayList.get(1).matchingSubjects.size()) {
-            return null; //ambigous statement
+            return null; //ambiguous statement
         } else {
             return actionsWithMatchingSubjectsArrayList.get(0).action;
         }
@@ -167,12 +164,10 @@ public final class GameServer {
 
     private String performAction(GameAction gameAction, HashSet<String> subjects, HashSet<String> produced, HashSet<String> consumed, String narration) {
         String output;
-        System.out.println(subjects);
         if (!serverState.areAvailable(subjects)) {
             output = ("Provided subjects are unavailable - check your inventory and location");
             return output;
         }
-        System.out.println("produced here" + produced);
         for (String item : produced) {
             String trimmedItem = item.trim();
             Location location = serverState.getLocation(trimmedItem);
@@ -180,11 +175,9 @@ public final class GameServer {
                 serverState.produceLocation(serverState.getCurrentLocation(), location);
             } else {
                 GameEntity entity = serverState.getEntityByName(trimmedItem);
-                System.out.println("ITEM IS " + trimmedItem);
                 serverState.moveEntityToCurrentLocation(entity);
             }
         }
-        System.out.println("consumed" + consumed.size());//This should be an empty hashset, but instead its a hashset of an empty string
         for (String item : consumed) {
             // Only consume the entity if the item is not empty and contains letters
             Location location = serverState.getLocation(item);

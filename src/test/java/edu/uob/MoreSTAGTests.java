@@ -30,7 +30,7 @@ class MoreSTAGTests {
     }
 
     @Test
-    void testExtraneousEntities() {
+    void testExtraneousEnts() {
         sendCommandToServer("simon: get axe");
         String response = sendCommandToServer("simon: chop tree with axe coin");
         response = response.toLowerCase();
@@ -44,7 +44,7 @@ class MoreSTAGTests {
     }
 
     @Test
-    void testCompositeCommands() {
+    void testCompositeCmds() {
         sendCommandToServer("simon: get axe");
         sendCommandToServer("simon: goto forest");
         String response = sendCommandToServer("simon: chop tree and get key");
@@ -103,7 +103,7 @@ class MoreSTAGTests {
 
     // Consuming items in inventory was causing problems so wrote a test for it
     @Test
-    void testConsumeItemInInventory() {
+    void testConsumeInvItem() {
         sendCommandToServer("simon: goto forest");
         sendCommandToServer("simon: goto riverbank");
         sendCommandToServer("simon: get horn");
@@ -113,7 +113,7 @@ class MoreSTAGTests {
     }
 
     @Test
-    void testGameToCompletion() {
+    void testCompleteGame() {
         sendCommandToServer("simon: get axe");
         sendCommandToServer("simon: get coin");
         sendCommandToServer("goto forest");

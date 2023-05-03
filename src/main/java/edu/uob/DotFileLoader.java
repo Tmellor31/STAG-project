@@ -35,7 +35,6 @@ public class DotFileLoader {
             Node locationDetails = startLocation.getNodes(false).get(0); //Gets the nodes of the first location in this case cabin
             // Yes, you do need to get the ID twice !
             String locationName = locationDetails.getId().getId(); //Name of first location '
-            //System.out.println(locationName);
             populateLocationMap(locations); //Loads locations into the serverstate
 
             // The paths will always be in the second subgraph
@@ -92,7 +91,6 @@ public class DotFileLoader {
                             break;
                     }
                 }
-                System.out.println(newLocation.getName());
                 serverState.addLocation(newLocation);
             }
         }

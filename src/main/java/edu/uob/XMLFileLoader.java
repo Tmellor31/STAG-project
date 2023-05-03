@@ -35,7 +35,6 @@ public class XMLFileLoader {
 
                 // Get the triggers for this action
                 HashSet<String> triggers = loadTriggers(actionElement.getElementsByTagName("keyphrase"));
-                System.out.println("TRIGGERS" + triggers);
 
 
                 // Create the GameAction object for this action
@@ -45,7 +44,6 @@ public class XMLFileLoader {
                     subjects.add(subjectNodes.item(j).getTextContent().trim());
                 }
                 NodeList consumedNodes = actionElement.getElementsByTagName("consumed");
-                System.out.println("CONSUMED NODES " + consumedNodes.getLength());
                 HashSet<String> consumed = new HashSet<>();
                 for (int j = 0; j < consumedNodes.getLength(); j++) {
                     NodeList childNodes = consumedNodes.item(j).getChildNodes();

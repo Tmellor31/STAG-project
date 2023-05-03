@@ -62,7 +62,6 @@ public class ServerState {
                 return location;
             }
         }
-        System.out.println("No locations found");
         return null;
     }
 
@@ -81,15 +80,6 @@ public class ServerState {
 
     public HashMap<String, HashSet<GameAction>> getActions() {
         return actions;
-    }
-
-
-    public ArrayList<String> getAllTriggers() {//Prints out all triggers currently in the game e.g. 'chop' 'cut' etc
-        ArrayList<String> triggers = new ArrayList<>();
-        for (String trigger : actions.keySet()) {
-            triggers.add(trigger);
-        }
-        return triggers;
     }
 
     public boolean areAvailable(HashSet<String> subjects) {
@@ -139,8 +129,6 @@ public class ServerState {
         if (inventoryEntity != null) {
             return inventoryEntity;
         }
-        System.out.println("trimmedname = " + trimmedName);
-        System.out.println("Inventorylist = " + getInventoryList());
         // Search for the entity in all locations
         for (Location location : locationMap.values()) {
             for (GameEntity item : location.getAllEntities()) {

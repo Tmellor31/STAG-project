@@ -13,7 +13,7 @@ public class Location {
     private ArrayList<Artefact> artefacts;
     private ArrayList<Furniture> furniture;
 
-    public Location(String name, String description, boolean isStart) {
+    public Location(String name, String description, boolean isStart) {//Was easier to incorporate it extending entities in other ways
         this.name = name;
         this.description = description;
         this.paths = new ArrayList<Path>();
