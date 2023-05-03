@@ -127,9 +127,10 @@ public final class GameServer {
     }
 
     private String performAction(GameAction gameAction, HashSet<String> subjects, HashSet<String> produced, HashSet<String> consumed, String narration) {
-        String output = ("Provided subjects are unavailable - check your inventory and location");
+        String output;
         System.out.println(subjects);
         if (!serverState.areAvailable(subjects)) {
+            output = ("Provided subjects are unavailable - check your inventory and location");
             return output;
         }
         System.out.println("produced here" + produced);
