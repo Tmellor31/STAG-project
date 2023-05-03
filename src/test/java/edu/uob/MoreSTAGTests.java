@@ -49,6 +49,7 @@ class MoreSTAGTests {
     @Test
     void testProduce(){
         sendCommandToServer("simon: get axe");
+        sendCommandToServer("simon: goto forest");
         sendCommandToServer("simon: chop tree with axe");
         String response = sendCommandToServer("simon: look");
         response = response.toLowerCase();

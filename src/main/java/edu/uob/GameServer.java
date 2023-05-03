@@ -140,8 +140,11 @@ public final class GameServer {
         }
         System.out.println("consumed" + consumed.size());//This should be an empty hashset, but instead its a hashset of an empty string
         for (String item : consumed) {
-            GameEntity entity = serverState.getEntityByName(item);
-            serverState.consumeGameEntity(entity);
+            // Only consume the entity if the item is not empty and contains letters
+            if (!item.isEmpty() && item.matches(".*[a-zA-Z].*")){
+                GameEntity entity = serverState.getEntityByName(item);
+                serverState.consumeGameEntity(entity);
+            }
         }
         output = narration;
         return output;
