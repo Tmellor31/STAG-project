@@ -2,7 +2,7 @@ package edu.uob;
 
 import java.util.ArrayList;
 
-public class Location {
+public class Location {//Was easier to incorporate it extending entities in other ways, other gameEntites still extend
     private String name;
     private String description;
 
@@ -12,7 +12,7 @@ public class Location {
     private ArrayList<Artefact> artefacts;
     private ArrayList<Furniture> furniture;
 
-    public Location(String name, String description, boolean isStart) {//Was easier to incorporate it extending entities in other ways
+    public Location(String name, String description, boolean isStart) {
         this.name = name;
         this.description = description;
         this.paths = new ArrayList<>();
